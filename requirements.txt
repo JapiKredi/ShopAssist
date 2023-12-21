@@ -1,6 +1,6 @@
 python-dotenv
 langchain
-openai==028
+openai==0.28
 numpy
 pandas
 scipy
