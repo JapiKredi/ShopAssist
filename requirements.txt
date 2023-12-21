@@ -8,3 +8,8 @@ tenacity
 tiktoken
 termcolor 
 requests
+flask
+functions
+ast
+re
+pandas
