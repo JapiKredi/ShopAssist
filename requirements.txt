@@ -1,0 +1,10 @@
+python-dotenv
+langchain
+openai==028
+numpy
+pandas
+scipy
+tenacity
+tiktoken
+termcolor 
+requests
