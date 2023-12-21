@@ -19,6 +19,9 @@ app = Flask(__name__)
 conversation_bot = []
 conversation = initialize_conversation()
 introduction = get_chat_model_completions(conversation)
+
+# The code conversation_bot.append({'bot': introduction}) appends a new dictionary to the conversation_bot list. 
+# The dictionary contains a key-value pair where the key is 'bot' and the value is the variable introduction.
 conversation_bot.append({'bot':introduction})
 top_3_laptops = None
 
