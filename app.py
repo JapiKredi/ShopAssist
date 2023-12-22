@@ -6,14 +6,11 @@ import ast
 import re
 import pandas as pd
 import json
-from dotenv import load_dotenv
 import os
 
-load_dotenv()
-openai.api_key = os.getenv('/Users/jasper/Desktop/FunctionCalling/OpenAI_API_Key.txt')
 
 # Read the OpenAI Api_key
-#openai.api_key = open("api_key.txt", "r").read().strip()
+openai.api_key = open("OpenAI_API_Key.txt", "r").read().strip()
 
 # The code app = Flask(__name__) creates an instance of the Flask class in Python.
 # The Flask class is a part of the Flask framework, which is a popular web framework used for building web applications in Python. It provides a set of tools and libraries for handling HTTP requests, routing, and rendering HTML templates.
