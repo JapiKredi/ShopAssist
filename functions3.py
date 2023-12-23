@@ -83,7 +83,40 @@ def initialize_conversation():
     return response.choices[0].message["content"]
 """
 
+def get_chat_model_completions(messages):
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613",
+            messages=messages,
+            temperature=0,
+            max_tokens=500,
+            functions=[
+                {
+                    "name": "get_currency",
+                    "description": "Get the right currency of the budget",
+                    "parameters": {
+                        "type": "object",
+                        "properties": {
+                            "currency": {
+                                "type": "string",
+                                "description": "The currency of the budget, e.g. US Dollar or Indian Rupee",
+                            }
+                        },
+                        "required": ["currency_symbol"],
+                    },
+                }
+            ],
+            function_call="auto",
+        )
+        message = response.choices[0].message["content"]
+        print(message)
+        return response.choices[0].message["content"]
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return None
 
+
+""""
 def get_chat_model_completions(messages):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-0613",
@@ -106,9 +139,10 @@ def get_chat_model_completions(messages):
         ],
         function_call="auto",
     )
-    
+    message = response.choices[0].message["content"]
+    print(message)
     return response.choices[0].message["content"]
-
+"""
     """"
     # Step 2, check if the model wants to call a function
     if message.get("function_call"):
