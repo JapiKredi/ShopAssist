@@ -80,14 +80,14 @@ def invite():
             if moderation == 'Flagged':
                 return redirect(url_for('end_conv'))
             
-            currency_symbol = get_cutrrency_symbol(response)
+            currency_symbol = get_currency_symbol(response)
             
             currency_value = get_currency_value(currency_symbol)
             
             currency_factor = float(currency_value[1] / currency_value[0])
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
-            top_3_laptops = compare_laptops_with_user(response)
+            top_3_laptops = compare_laptops_with_user(response, currency_factor)
 
             validated_reco = recommendation_validation(top_3_laptops)
 

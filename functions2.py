@@ -72,8 +72,63 @@ def initialize_conversation():
     conversation = [{"role": "system", "content": system_message}]
     return conversation
 
+#########
 
 
+def get_chat_model_completions():
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-0613",
+        messages=messages,
+        functions=[
+            {
+                "name": "get_currency_symbol",
+                "description": "Get the current weather in a given location",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "currency_symbol": {
+                            "type": "string",
+                            "description": "The currency symbol, e.g. USD for US Dollar",
+                        }
+                    },
+                    "required": ["currency_symbol"],
+                },
+            }
+        ],
+        function_call="auto",
+    )
+
+    message = response["choices"][0]["message"]
+
+    # Step 2, check if the model wants to call a function
+    if message.get("function_call"):
+        function_name = message["function_call"]["name"]
+        function_args = json.loads(message["function_call"]["arguments"])
+
+        # Step 3, call the function
+        # Note: the JSON response from the model may not be valid JSON
+        function_response = get_current_weather(
+            location=function_args.get("location"),
+            unit=function_args.get("unit"),
+        )
+
+        # Step 4, send model the info on the function call and function response
+        second_response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613",
+            messages=[
+                {"role": "user", "content": "What is the weather like in boston?"},
+                message,
+                {
+                    "role": "function",
+                    "name": function_name,
+                    "content": function_response,
+                },
+            ],
+        )
+        return second_response
+
+
+########
 
 def get_chat_model_completions(messages, tools=tools, tool_choice=None, model='gpt-3.5-turbo-1106'):
     
@@ -194,7 +249,16 @@ def extract_dictionary_from_string(string):
 
 ######
 
-def get_cutrrency_symbol(dictionary):
+
+
+
+
+
+
+
+######
+
+def get_currency_symbol(dictionary):
     delimiter = "####"
     prompt = f"""
     You are a financial expert.
