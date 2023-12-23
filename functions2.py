@@ -207,11 +207,13 @@ def get_currency_value(currency_symbol):
 
     # Check if the currency symbols exist in the rates dictionary
     if 'INR' in data['rates'] and currency_symbol in data['rates']:
-        inr_value = data['rates']['INR']
-        currency_value = data['rates'][currency_symbol]
+        inr_value = floar(data['rates']['INR'])
+        currency_value = float(data['rates'][currency_symbol])
         return inr_value, currency_value
     else:
         raise ValueError("Invalid currency symbol")
+
+currency_factor = float(currency_value / inr_value)
 
 # Example usage
 def main():
