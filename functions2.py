@@ -245,8 +245,8 @@ def main():
 
 ######
 
-def compare_laptops_with_user(user_req_string):
-    laptop_df= pd.read_csv('updated_laptop.csv', currency_factor)
+def compare_laptops_with_user(user_req_string, currency_factor):
+    laptop_df= pd.read_csv('updated_laptop.csv')
     laptop_df[price] = laptop_df[price] * currency_factor
     user_requirements = extract_dictionary_from_string(user_req_string)
     budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
