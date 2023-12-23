@@ -21,12 +21,12 @@ def initialize_conversation():
     These key value pairs define the user's profile.
     The python dictionary looks like this {{'GPU intensity': 'values','Display quality': 'values','Portability': 'values','Multitasking': 'values','Processing speed': 'values','Budget': 'values'}}
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user. 
-    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well (i.e. US Dollar, Indian Rupee, Euro etc) 
+    The value for 'budget' should be a numerical value extracted from the user's response. 
     The values currently in the dictionary are only representative values. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The values for all keys, except 'Budget', should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
-    - The value for 'budget' should be a numerical value extracted from the user's response and you will have to always ask for the currency as well.
+    - The value for 'budget' should be a numerical value extracted from the user's response.
     - 'Budget' value needs to be greater than or equal to 25000 INR. If the user says less than that, please mention that there are no laptops in that range.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
@@ -61,9 +61,7 @@ def initialize_conversation():
     Assistant: "Thank you for the information. Processing 4K vidoes will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
     User: "Yes, sometimes I travel but do not carry my laptop."
     Assistant:"Could you kindly let me know your budget for the laptop? This will help me find options that fit within your price range while meeting the specified requirements."
-    User: "my max budget is 80,000"
-    Assistant: "Which currency is this?"
-    User: "Ohh sorry, my max budget is 80,000 indian rupees"
+    User: "my max budget is 1.5lakh inr"
     Assistant: "{example_user_req}"
     {delimiter}
 
@@ -73,7 +71,8 @@ def initialize_conversation():
     return conversation
 
 
-"""def get_chat_model_completions(messages):
+
+def get_chat_model_completions(messages):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=messages,
@@ -81,95 +80,6 @@ def initialize_conversation():
         max_tokens = 300
     )
     return response.choices[0].message["content"]
-"""
-
-def get_chat_model_completions(messages):
-    try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-0613",
-            messages=messages,
-            temperature=0,
-            max_tokens=500,
-            functions=[
-                {
-                    "name": "get_currency",
-                    "description": "Get the right currency of the budget",
-                    "parameters": {
-                        "type": "object",
-                        "properties": {
-                            "currency": {
-                                "type": "string",
-                                "description": "The currency of the budget, e.g. US Dollar or Indian Rupee",
-                            }
-                        },
-                        "required": ["currency_symbol"],
-                    },
-                }
-            ],
-            function_call="auto",
-        )
-        message = response.choices[0].message["content"]
-        print(message)
-        return response.choices[0].message["content"]
-    except Exception as e:
-        print(f"An error occurred: {str(e)}")
-        return None
-
-
-""""
-def get_chat_model_completions(messages):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
-        messages=messages, temperature=0, max_tokens=500,
-        functions=[
-            {
-                "name": "get_currency",
-                "description": "Get the right currency of the budget",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "currency": {
-                            "type": "string",
-                            "description": "The currency, e.g. US Dollar or Indian Rupee",
-                        }
-                    },
-                    "required": ["currency_symbol"],
-                },
-            }
-        ],
-        function_call="auto",
-    )
-    message = response.choices[0].message["content"]
-    print(message)
-    return response.choices[0].message["content"]
-"""
-    """"
-    # Step 2, check if the model wants to call a function
-    if message.get("function_call"):
-        function_name = message["function_call"]["name"]
-        function_args = json.loads(message["function_call"]["arguments"])
-
-        # Step 3, call the function
-        # Note: the JSON response from the model may not be valid JSON
-        function_response = get_currency_symbol(
-            urrency_symbol=function_args.get("urrency_symbol"),
-        )
-
-        # Step 4, send model the info on the function call and function response
-        second_response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo-0613",
-            messages=[
-                {"role": "user", "content": "Is the currency symbol a valid and real currency symbol? Please return the real currency symbol"},
-                message,
-                {
-                    "role": "function",
-                    "name": function_name,
-                    "content": function_response,
-                },
-            ],
-        )
-        return currency_symbol
-        """
 
 
 
