@@ -90,14 +90,14 @@ def get_chat_model_completions(messages):
         messages=messages, temperature=0, max_tokens=500,
         functions=[
             {
-                "name": "get_currency_symbol",
-                "description": "Get the right currency symbol of the budget",
+                "name": "get_currency",
+                "description": "Get the right currency of the budget",
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "currency_symbol": {
+                        "currency": {
                             "type": "string",
-                            "description": "The currency symbol, e.g. USD for US Dollar or INR for Indian Rupee",
+                            "description": "The currency, e.g. US Dollar or Indian Rupee",
                         }
                     },
                     "required": ["currency_symbol"],
