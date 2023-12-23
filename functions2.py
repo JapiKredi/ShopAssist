@@ -74,15 +74,36 @@ def initialize_conversation():
 
 
 
-def get_chat_model_completions(messages):
+
+def get_chat_model_completions(messages, tools=tools, tool_choice=None, model='gpt-3.5-turbo-1106'):
+    
+    tools = [
+        {
+            "type": "function",
+            "function": {
+                "name": "get_currency_symbol",
+                "description": "Get the current currency symbol",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "currency_symbol": {
+                            "type": "string",
+                            "description": "The currency symbol, e.g. USD for US Dollar"
+                        }
+                    },
+                    "required": ["currency_symbol"]
+                }
+            }
+        }
+    ]
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+        tools=tools, tool_choice=None,
+        model="gpt-3.5-turbo-1106",
         messages=messages,
         temperature=0, # this is the degree of randomness of the model's output
         max_tokens = 300
     )
     return response.choices[0].message["content"]
-
 
 
 def moderation_check(user_input):
@@ -213,7 +234,6 @@ def get_currency_value(currency_symbol):
     else:
         raise ValueError("Invalid currency symbol")
 
-currency_factor = float(currency_value / inr_value)
 
 # Example usage
 def main():
@@ -226,7 +246,7 @@ def main():
 ######
 
 def compare_laptops_with_user(user_req_string):
-    laptop_df= pd.read_csv('updated_laptop.csv')
+    laptop_df= pd.read_csv('updated_laptop.csv', currency_factor)
     laptop_df[price] = laptop_df[price] * currency_factor
     user_requirements = extract_dictionary_from_string(user_req_string)
     budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
