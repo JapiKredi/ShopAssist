@@ -11,22 +11,20 @@ def initialize_conversation():
     '''
     
     delimiter = "####"
-    example_user_req = {'GPU intensity': 'high','Display quality': 'high','Portability': 'low','Multitasking': 'high','Processing speed': 'high','Budget': '150000'}
+    example_user_req = {'GPU intensity': 'high','Display quality': 'high','Portability': 'low','Multitasking': 'high','Processing speed': 'high'}
     
     system_message = f"""
 
     You are an intelligent laptop gadget expert and your goal is to find the best laptop for a user.
     You need to ask relevant questions and understand the user profile by analysing the user's responses.
-    You final objective is to fill the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the python dictionary and be confident of the values.
+    You final objective is to fill the values for the different keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed') in the python dictionary and be confident of the values.
     These key value pairs define the user's profile.
-    The python dictionary looks like this {{'GPU intensity': 'values','Display quality': 'values','Portability': 'values','Multitasking': 'values','Processing speed': 'values','Budget': 'values'}}
-    The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user. 
-    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well. The user can give any curreency (i.e. US Dollar, Indian Rupee, Euro etc).
+    The python dictionary looks like this {{'GPU intensity': 'values','Display quality': 'values','Portability': 'values','Multitasking': 'values','Processing speed': 'values'}}
+    The values for all keys, should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user. 
     The values currently in the dictionary are only representative values. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
-    - The values for all keys, except 'Budget', should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
-    - The value for 'budget' should be a numerical value extracted from the user's response and you will have to always ask for the currency as well.
+    - The values for all keys should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
     - 'Budget' can be stated in any currency, please mention this to the user.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
@@ -34,7 +32,7 @@ def initialize_conversation():
     To fill the dictionary, you need to have the following chain of thoughts:
     {delimiter} Thought 1: Ask a question to understand the user's profile and requirements. \n
     If their primary use for the laptop is unclear. Ask another question to comprehend their needs.
-    You are trying to fill the values of all the keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed','Budget') in the python dictionary by understanding the user requirements.
+    You are trying to fill the values of all the keys ('GPU intensity','Display quality','Portability','Multitasking','Processing speed') in the python dictionary by understanding the user requirements.
     Identify the keys for which you can fill the values confidently using the understanding. \n
     Remember the instructions around the values for the different keys. 
     Answer "Yes" or "No" to indicate if you understand the requirements and have updated the values for the relevant keys. \n
@@ -60,10 +58,6 @@ def initialize_conversation():
     User: "Yes, sometimes I work with 4K videos as well."
     Assistant: "Thank you for the information. Processing 4K vidoes will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
     User: "Yes, sometimes I travel but do not carry my laptop."
-    Assistant:"Could you kindly let me know your budget for the laptop? You can choose any currency. This will help me find options that fit within your price range while meeting the specified requirements."
-    User: "My max budget is 80,000"
-    Assistant: "Which currency is this?"
-    User: "Ohh sorry, my max budget is 80,000 indian rupees"
     Assistant: "{example_user_req}"
     {delimiter}
 
@@ -92,14 +86,13 @@ def moderation_check(user_input):
         return "Not Flagged"
 
 
-    
 def intent_confirmation_layer(response_assistant):
     delimiter = "####"
     prompt = f"""
     You are a senior evaluator who has an eye for detail.
-    You are provided an input. You need to evaluate if the input has the following keys: 'GPU intensity','Display quality','Portability','Multitasking',' Processing speed','Budget'
+    You are provided an input. You need to evaluate if the input has the following keys: 'GPU intensity','Display quality','Portability','Multitasking',' Processing speed'
     Next you need to evaluate if the keys have the the values filled correctly.
-    The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance as stated by user. The value for the key 'budget' needs to contain a number with currency.
+    The values for all keys should be 'low', 'medium', or 'high' based on the importance as stated by user. 
     Output a string 'Yes' if the input contains the dictionary with the values correctly filled for all keys.
     Otherwise out the string 'No'.
 
@@ -131,14 +124,14 @@ def dictionary_present(response):
 
             Here are some sample input output pairs for better understanding:
             {delimiter}
-            input: - GPU intensity: low - Display quality: high - Portability: low - Multitasking: high - Processing speed: medium - Budget: 50,000 INR
-            output: {{'GPU intensity': 'low', 'Display quality': 'high', 'Portability': 'low', 'Multitasking': 'high', 'Processing speed': 'medium', 'Budget': '50000'}}
+            input: - GPU intensity: low - Display quality: high - Portability: low - Multitasking: high - Processing speed: medium
+            output: {{'GPU intensity': 'low', 'Display quality': 'high', 'Portability': 'low', 'Multitasking': 'high', 'Processing speed': 'medium'}}
 
-            input: {{'GPU intensity':     'low', 'Display quality':     'high', 'Portability':    'low', 'Multitasking': 'high', 'Processing speed': 'medium', 'Budget': '90,000'}}
-            output: {{'GPU intensity': 'low', 'Display quality': 'high', 'Portability': 'low', 'Multitasking': 'high', 'Processing speed': 'medium', 'Budget': '90000'}}
+            input: {{'GPU intensity':     'low', 'Display quality':     'high', 'Portability':    'low', 'Multitasking': 'high', 'Processing speed': 'medium'}}
+            output: {{'GPU intensity': 'low', 'Display quality': 'high', 'Portability': 'low', 'Multitasking': 'high', 'Processing speed': 'medium'}}
 
-            input: Here is your user profile 'GPU intensity': 'high','Display quality': 'high','Portability': 'medium','Multitasking': 'low','Processing speed': 'high','Budget': '200000 INR'
-            output: {{'GPU intensity': 'high','Display quality': 'high','Portability': 'medium','Multitasking': 'high','Processing speed': 'low','Budget': '200000'}}
+            input: Here is your user profile 'GPU intensity': 'high','Display quality': 'high','Portability': 'medium','Multitasking': 'low','Processing speed': 'high'
+            output: {{'GPU intensity': 'high','Display quality': 'high','Portability': 'medium','Multitasking': 'high','Processing speed': 'low'}}
             {delimiter}
 
             Here is the input {response}
@@ -152,7 +145,6 @@ def dictionary_present(response):
         # top_p=0.4
     )
     return response["choices"][0]["text"]
-
 
 
 def extract_dictionary_from_string(string):
@@ -175,6 +167,7 @@ def extract_dictionary_from_string(string):
 
 def compare_laptops_with_user(user_req_string):
     laptop_df= pd.read_csv('updated_laptop.csv')
+    budget = 80,000
     user_requirements = extract_dictionary_from_string(user_req_string)
     budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
     #This line retrieves the value associated with the key 'budget' from the user_requirements dictionary.
