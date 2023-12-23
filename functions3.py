@@ -83,8 +83,6 @@ def get_chat_model_completions(messages):
     )
     return response.choices[0].message["content"]
 
-
-
 def moderation_check(user_input):
     response = openai.Moderation.create(input=user_input)
     moderation_output = response["results"][0]
