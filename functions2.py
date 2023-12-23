@@ -107,16 +107,15 @@ def get_chat_model_completions():
 
         # Step 3, call the function
         # Note: the JSON response from the model may not be valid JSON
-        function_response = get_current_weather(
-            location=function_args.get("location"),
-            unit=function_args.get("unit"),
+        function_response = get_currency_symbol(
+            urrency_symbol=function_args.get("urrency_symbol"),
         )
 
         # Step 4, send model the info on the function call and function response
         second_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=[
-                {"role": "user", "content": "What is the weather like in boston?"},
+                {"role": "user", "content": "Is the currency symbol a valid and real currency symbol? Please return the real currency symbol"},
                 message,
                 {
                     "role": "function",
@@ -125,7 +124,7 @@ def get_chat_model_completions():
                 },
             ],
         )
-        return second_response
+        return currency_symbol
 
 
 ########
