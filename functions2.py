@@ -21,12 +21,12 @@ def initialize_conversation():
     These key value pairs define the user's profile.
     The python dictionary looks like this {{'GPU intensity': 'values','Display quality': 'values','Portability': 'values','Multitasking': 'values','Processing speed': 'values','Budget': 'values'}}
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user. 
-    The value for 'budget' should be a numerical value extracted from the user's response. 
+    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well (i.e. US Dollar, Indian Rupee, Euro etc) 
     The values currently in the dictionary are only representative values. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The values for all keys, except 'Budget', should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
-    - The value for 'budget' should be a numerical value extracted from the user's response.
+    - The value for 'budget' should be a numerical value extracted from the user's response and you will have to always ask for the currency as well.
     - 'Budget' value needs to be greater than or equal to 25000 INR. If the user says less than that, please mention that there are no laptops in that range.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
@@ -61,7 +61,9 @@ def initialize_conversation():
     Assistant: "Thank you for the information. Processing 4K vidoes will require a good processor and high GPU. I think we have already determined earlier that you need a high GPU. To ensure I have a complete understanding of your needs, I have one more question: Are you frequently on the go and require a laptop that is lightweight and easy to carry, or do you primarily work from a stationary location?"
     User: "Yes, sometimes I travel but do not carry my laptop."
     Assistant:"Could you kindly let me know your budget for the laptop? This will help me find options that fit within your price range while meeting the specified requirements."
-    User: "my max budget is 1.5lakh inr"
+    User: "my max budget is 80,000"
+    Assistant: "Which currency would this be?"
+    User: "Ohh sorry, my max budget is 80,000 indian rupees"
     Assistant: "{example_user_req}"
     {delimiter}
 
@@ -99,7 +101,7 @@ def intent_confirmation_layer(response_assistant):
     You are a senior evaluator who has an eye for detail.
     You are provided an input. You need to evaluate if the input has the following keys: 'GPU intensity','Display quality','Portability','Multitasking',' Processing speed','Budget'
     Next you need to evaluate if the keys have the the values filled correctly.
-    The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance as stated by user. The value for the key 'budget' needs to contain a number with currency.
+    The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance as stated by user. The value for the key 'budget' needs to contain a number with currency. If there is no currency then the value is incorrect.
     Output a string 'Yes' if the input contains the dictionary with the values correctly filled for all keys.
     Otherwise out the string 'No'.
 
@@ -169,8 +171,57 @@ def extract_dictionary_from_string(string):
         dictionary = ast.literal_eval(dictionary_string)
     return dictionary
 
+######
+
+def get_cutrrency_symbol(xxxx):
+    delimiter = "####"
+    prompt = f"""
+    You are a financial expert.
+    You are provided the dictionary of the users requests. You will have to check the budget and you will need to get the currency from this. 
+    Next you need to get the currency symbol for this currency. 
+    You will have to output the currency symbol. 
+
+    Here is the input: {response_assistant}
+    Only output a the currency symbol.
+    """
 
 
+    currency_symbol = openai.Completion.create(
+                                    model="text-davinci-003",
+                                    prompt = prompt,
+                                    temperature=0)
+
+
+    return currency_symbol["choices"][0]["text"]
+
+
+
+def get_currency_value(currency_symbol):
+    url = f"http://api.exchangeratesapi.io/latest?access_key={API_KEY}"
+    response = requests.get(url, verify=False)
+    if response.status_code != 200:
+        print("Status Code:", response.status_code)
+        raise Exception("There was an error!")
+
+    data = response.json()
+
+    # Check if the currency symbols exist in the rates dictionary
+    if 'INR' in data['rates'] and currency_symbol in data['rates']:
+        inr_value = data['rates']['INR']
+        currency_value = data['rates'][currency_symbol]
+        return inr_value, currency_value
+    else:
+        raise ValueError("Invalid currency symbol")
+
+# Example usage
+def main():
+    currency_symbol = 'USD'
+    inr_value, currency_value = get_currency_value(currency_symbol)
+    print(f"The value of INR is: {inr_value}")
+    print(f"The value of {currency_symbol} is: {currency_value}")
+
+
+######
 
 def compare_laptops_with_user(user_req_string):
     laptop_df= pd.read_csv('updated_laptop.csv')
