@@ -97,7 +97,7 @@ def get_chat_model_completions(messages, tools=tools, tool_choice=None, model='g
         }
     ]
     response = openai.ChatCompletion.create(
-        tools=tools, tool_choice=None,
+        tools=tools, tool_choice='auto',
         model="gpt-3.5-turbo-1106",
         messages=messages,
         temperature=0, # this is the degree of randomness of the model's output
