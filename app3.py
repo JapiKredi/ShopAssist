@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request
-from functions2 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, get_currency_symbol, get_currency_value
+from functions3 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation
 
 import openai
 import ast
@@ -79,15 +79,9 @@ def invite():
             moderation = moderation_check(response)
             if moderation == 'Flagged':
                 return redirect(url_for('end_conv'))
-            
-            currency_symbol = get_currency_symbol(response)
-            
-            currency_value = get_currency_value(currency_symbol)
-            
-            currency_factor = float(currency_value[1] / currency_value[0])
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
-            top_3_laptops = compare_laptops_with_user(response, currency_factor)
+            top_3_laptops = compare_laptops_with_user(response)
 
             validated_reco = recommendation_validation(top_3_laptops)
 
