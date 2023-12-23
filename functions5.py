@@ -1,3 +1,13 @@
+import openai
+import ast
+import re
+import pandas as pd
+import json
+
+# Read the OpenAI Api_key
+openai.api_key = open("OpenAI_API_Key.txt", "r").read().strip()
+
+
 def check_budget(response):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-0613",
@@ -52,3 +62,10 @@ def check_budget(response):
         )
         print(second_response)
         return second_response
+    
+    
+
+response = []
+response = check_budget(response)
+print(response)
+
