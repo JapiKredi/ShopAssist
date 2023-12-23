@@ -21,7 +21,7 @@ def initialize_conversation():
     These key value pairs define the user's profile.
     The python dictionary looks like this {{'GPU intensity': 'values','Display quality': 'values','Portability': 'values','Multitasking': 'values','Processing speed': 'values','Budget': 'values'}}
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user. 
-    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well (i.e. US Dollar, Indian Rupee, Euro etc) 
+    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well (i.e. US Dollar, Indian Rupee, Euro etc).
     The values currently in the dictionary are only representative values. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
@@ -62,7 +62,7 @@ def initialize_conversation():
     User: "Yes, sometimes I travel but do not carry my laptop."
     Assistant:"Could you kindly let me know your budget for the laptop? This will help me find options that fit within your price range while meeting the specified requirements."
     User: "my max budget is 80,000"
-    Assistant: "Which currency would this be?"
+    Assistant: "Which currency is this?"
     User: "Ohh sorry, my max budget is 80,000 indian rupees"
     Assistant: "{example_user_req}"
     {delimiter}
@@ -72,10 +72,9 @@ def initialize_conversation():
     conversation = [{"role": "system", "content": system_message}]
     return conversation
 
-#########
 
 
-def get_chat_model_completions():
+def get_chat_model_completions(messages):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-0613",
         messages=messages,
@@ -127,37 +126,6 @@ def get_chat_model_completions():
         return currency_symbol
 
 
-########
-
-def get_chat_model_completions(messages, tools=tools, tool_choice=None, model='gpt-3.5-turbo-1106'):
-    
-    tools = [
-        {
-            "type": "function",
-            "function": {
-                "name": "get_currency_symbol",
-                "description": "Get the current currency symbol",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "currency_symbol": {
-                            "type": "string",
-                            "description": "The currency symbol, e.g. USD for US Dollar"
-                        }
-                    },
-                    "required": ["currency_symbol"]
-                }
-            }
-        }
-    ]
-    response = openai.ChatCompletion.create(
-        tools=tools, tool_choice='auto',
-        model="gpt-3.5-turbo-1106",
-        messages=messages,
-        temperature=0, # this is the degree of randomness of the model's output
-        max_tokens = 300
-    )
-    return response.choices[0].message["content"]
 
 
 def moderation_check(user_input):
@@ -246,16 +214,7 @@ def extract_dictionary_from_string(string):
         dictionary = ast.literal_eval(dictionary_string)
     return dictionary
 
-######
 
-
-
-
-
-
-
-
-######
 
 def get_currency_symbol(dictionary):
     delimiter = "####"
@@ -306,7 +265,6 @@ def main():
     print(f"The value of {currency_symbol} is: {currency_value}")
 
 
-######
 
 def compare_laptops_with_user(user_req_string, currency_factor):
     laptop_df= pd.read_csv('updated_laptop.csv')
