@@ -163,7 +163,7 @@ def extract_dictionary_from_string(string):
 
 ##### 
 
-def check_budget():
+def check_budget(response):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-0613",
         messages=[{"role": "user", "content": "What is your budget?"}],
@@ -219,6 +219,9 @@ def check_budget():
         return second_response
 
 ##### 
+
+
+
 
 
 def compare_laptops_with_user(user_req_string):
