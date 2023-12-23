@@ -25,7 +25,6 @@ def initialize_conversation():
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The values for all keys should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
-    - 'Budget' can be stated in any currency, please mention this to the user.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
 
@@ -114,7 +113,7 @@ def intent_confirmation_layer(response_assistant):
 
 def dictionary_present(response):
     delimiter = "####"
-    user_req = {'GPU intensity': 'high','Display quality': 'high','Portability': 'medium','Multitasking': 'high','Processing speed': 'high','Budget': '200000 INR'}
+    user_req = {'GPU intensity': 'high','Display quality': 'high','Portability': 'medium','Multitasking': 'high','Processing speed': 'high'}
     prompt = f"""You are a python expert. You are provided an input.
             You have to check if there is a python dictionary present in the string.
             It will have the following format {user_req}.
@@ -159,17 +158,72 @@ def extract_dictionary_from_string(string):
 
         # Convert the dictionary string to a dictionary object using ast.literal_eval()
         dictionary = ast.literal_eval(dictionary_string)
-    print(dictionary)
     return dictionary
 
 
+##### 
+
+def check_budget():
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-0613",
+        messages=[{"role": "user", "content": "What is your budget?"}],
+        functions=[
+            {
+                "name": "get_budget",
+                "description": "Get the budget from the user",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "budget_value": {
+                            "type": "integer",
+                            "description": "The budget of the laptop, e.g. 80,000 INRT",
+                        },
+                        "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
+                    },
+                    "required": ["budget_value", 'currency_symbol'],
+                },
+            }
+        ],
+        function_call="auto",
+    )
+
+    message = response["choices"][0]["message"]
+
+    # Step 2, check if the model wants to call a function
+    if message.get("function_call"):
+        function_name = message["function_call"]["name"]
+        function_args = json.loads(message["function_call"]["arguments"])
+
+        # Step 3, call the function
+        # Note: the JSON response from the model may not be valid JSON
+        function_response = get_current_weather(
+            location=function_args.get("location"),
+            unit=function_args.get("unit"),
+        )
+
+        # Step 4, send model the info on the function call and function response
+        second_response = openai.ChatCompletion.create(
+            model="gpt-3.5-turbo-0613",
+            messages=[
+                {"role": "user", "content": "What is the weather like in boston?"},
+                message,
+                {
+                    "role": "function",
+                    "name": function_name,
+                    "content": function_response,
+                },
+            ],
+        )
+        return second_response
+
+##### 
 
 
 def compare_laptops_with_user(user_req_string):
     laptop_df= pd.read_csv('updated_laptop.csv')
-    budget = 80,000
+    budget = 80000
     user_requirements = extract_dictionary_from_string(user_req_string)
-    budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
+    #budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
     #This line retrieves the value associated with the key 'budget' from the user_requirements dictionary.
     #If the key is not found, the default value '0' is used.
     #The value is then processed to remove commas, split it into a list of strings, and take the first element of the list.
