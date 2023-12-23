@@ -173,7 +173,7 @@ def extract_dictionary_from_string(string):
 
 ######
 
-def get_cutrrency_symbol(xxxx):
+def get_cutrrency_symbol(dictionary):
     delimiter = "####"
     prompt = f"""
     You are a financial expert.
