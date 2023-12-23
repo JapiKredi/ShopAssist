@@ -21,13 +21,13 @@ def initialize_conversation():
     These key value pairs define the user's profile.
     The python dictionary looks like this {{'GPU intensity': 'values','Display quality': 'values','Portability': 'values','Multitasking': 'values','Processing speed': 'values','Budget': 'values'}}
     The values for all keys, except 'budget', should be 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user. 
-    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well (i.e. US Dollar, Indian Rupee, Euro etc).
+    The value for 'budget' should be a numerical value extracted from the user's response and it should contain the currency as well. The user can give any curreency (i.e. US Dollar, Indian Rupee, Euro etc).
     The values currently in the dictionary are only representative values. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The values for all keys, except 'Budget', should strictly be either 'low', 'medium', or 'high' based on the importance of the corresponding keys, as stated by user.
     - The value for 'budget' should be a numerical value extracted from the user's response and you will have to always ask for the currency as well.
-    - 'Budget' value needs to be greater than or equal to 25000 INR. If the user says less than that, please mention that there are no laptops in that range.
+    - 'Budget' can be stated in any currency, please mention this to the user.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
 
