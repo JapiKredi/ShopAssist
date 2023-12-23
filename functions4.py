@@ -188,6 +188,7 @@ def check_budget():
     )
 
     message = response["choices"][0]["message"]
+    print(message)
 
     # Step 2, check if the model wants to call a function
     if message.get("function_call"):
@@ -196,16 +197,16 @@ def check_budget():
 
         # Step 3, call the function
         # Note: the JSON response from the model may not be valid JSON
-        function_response = get_current_weather(
-            location=function_args.get("location"),
-            unit=function_args.get("unit"),
+        function_response = check_budget(
+            budget_value=function_args.get("budget_value"),
+            currency_symbol=function_args.get("currency_symbol"),
         )
 
         # Step 4, send model the info on the function call and function response
         second_response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo-0613",
             messages=[
-                {"role": "user", "content": "What is the weather like in boston?"},
+                {"role": "user", "content": "What is your budget?"},
                 message,
                 {
                     "role": "function",
@@ -214,6 +215,7 @@ def check_budget():
                 },
             ],
         )
+        print(second_response)
         return second_response
 
 ##### 
