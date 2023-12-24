@@ -163,7 +163,7 @@ def extract_dictionary_from_string(string):
 
 ##### 
 
-def budget_prompting():
+def budget_prompting(response):
     '''
     Returns a list [{"role": "system", "content": system_message}]
     '''
@@ -175,9 +175,8 @@ def budget_prompting():
     system_message = f"""
 
     You are an intelligent laptop gadget expert and your goal is to find the best laptop for a user.
-    You have already gathered the relevant questions and you already understand the user profile by analysing the user's responses.
+    You have already gathered the relevant questions and you already understand the user profile by analysing the user's responses: {response}.\
     You final objective is to also get the budget of the user.
-    You want to obtain the following information from the user {'Budget': '80000 INR'}
     The python dictionary looks like this {{'Budget': 'values'}}
     The value for 'budget' should be a numerical value extracted from the user's response. 
     The values currently in the dictionary are only representative values. 
@@ -231,7 +230,7 @@ def get_budget(response):
                     "properties": {
                         "budget_value": {
                             "type": "integer",
-                            "description": "The budget of the laptop, e.g. 80,000 INRT",
+                            "description": "The budget of the laptop, e.g. 80,000 INR",
                         },
                         "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
                     },
@@ -244,7 +243,9 @@ def get_budget(response):
 
     message = response["choices"][0]["message"]
     print(message)
-
+    
+    
+    """
     # Step 2, check if the model wants to call a function
     if message.get("function_call"):
         function_name = message["function_call"]["name"]
@@ -252,13 +253,14 @@ def get_budget(response):
 
         # Step 3, call the function
         # Note: the JSON response from the model may not be valid JSON
-        function_response = check_budget(
+        function_response = get_budget_(
             budget_value=function_args.get("budget_value"),
             currency_symbol=function_args.get("currency_symbol"),
         )
         print(budget_value)
         print(currency_symbol)
         return budget_value, currency_symbol
+        """
 
 
 def compare_laptops_with_user(user_req_string):
@@ -308,7 +310,6 @@ def compare_laptops_with_user(user_req_string):
     top_laptops = top_laptops.sort_values('Score', ascending=False).head(3)
 
     return top_laptops.to_json(orient='records')
-
 
 
 
