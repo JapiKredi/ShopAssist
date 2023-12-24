@@ -85,8 +85,7 @@ def invite():
             #conversation_bot.append(budget_conversation)
             budget_dictionary = get_budget(budget_conversation)
             print('This is what i wanted to print')
-            print(budget_dictionary)
-             
+            print(f"budget dictionary: {budget_dictionary}")
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
             top_3_laptops = compare_laptops_with_user(response)
