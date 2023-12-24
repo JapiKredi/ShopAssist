@@ -28,6 +28,7 @@ conversation_bot.append({'bot':introduction})
 
 # The code top_3_laptops = None assigns the value None to the variable top_3_laptops.
 top_3_laptops = None
+budget = None
 
 
 @app.route("/")
@@ -54,7 +55,7 @@ def invite():
     if moderation == 'Flagged':
         return redirect(url_for('end_conv'))
 
-    if top_3_laptops is None:
+    if top_3_laptops is None or budget is None:
         conversation.append({"role": "user", "content": user_input + prompt})
         conversation_bot.append({'user':user_input})
 
@@ -88,11 +89,11 @@ def invite():
             print(f"budget dictionary: {budget_dictionary}")
             # Extracting budget_value and currency_symbol from the message
             arguments = json.loads(budget_dictionary["function_call"]["arguments"])
-            budget_value = arguments["budget_value"]
+            budget = arguments["budget_value"]
             currency_symbol = arguments["currency_symbol"]
 
             # Printing the extracted values
-            print("budget_value:", budget_value)
+            print("budget_value:", budget)
             print("currency_symbol:", currency_symbol)
             
 

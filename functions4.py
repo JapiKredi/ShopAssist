@@ -161,7 +161,6 @@ def extract_dictionary_from_string(string):
     return dictionary
 
 
-##### 
 
 def budget_prompting(response):
     '''
@@ -205,7 +204,7 @@ def budget_prompting(response):
     Assistant:"Thanks for all the information. Could you kindly let me know your budget for the laptop? You can use any currency that you prefer. This will help me find options that fit within your price range while meeting the specified requirements."
     User: "My max budget is 80,000"
     Assistant:"Thanks. Which currency is this?"
-    User: "Indian Rupees. 80,000 indian rupeed."
+    User: "Indian Rupees. 80,000 INR"
     
     Assistant: "{example_user_req}"
     {delimiter}
