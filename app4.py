@@ -86,6 +86,15 @@ def invite():
             budget_dictionary = get_budget(budget_conversation)
             print('This is what i wanted to print')
             print(f"budget dictionary: {budget_dictionary}")
+            # Extracting budget_value and currency_symbol from the message
+            arguments = json.loads(message["function_call"]["arguments"])
+            budget_value = arguments["budget_value"]
+            currency_symbol = arguments["currency_symbol"]
+
+            # Printing the extracted values
+            print("budget_value:", budget_value)
+            print("currency_symbol:", currency_symbol)
+            
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
             top_3_laptops = compare_laptops_with_user(response)
