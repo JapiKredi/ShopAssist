@@ -37,7 +37,7 @@ def default_func():
 
 @app.route("/end_conv", methods = ['POST','GET'])
 def end_conv():
-    global conversation_bot, conversation, top_3_laptops
+    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary
     conversation_bot = []
     conversation = initialize_conversation()
     introduction = get_chat_model_completions(conversation)
@@ -81,7 +81,7 @@ def invite():
                 return redirect(url_for('end_conv'))
             
             ####
-            budget_conversation = budget_prompting(response)
+            budget_conversation = budget_prompting(conversation)
             #conversation_bot.append(budget_conversation)
             budget_dictionary = get_budget(budget_conversation)
             print('This is what i wanted to print')
