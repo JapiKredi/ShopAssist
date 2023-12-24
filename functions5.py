@@ -18,7 +18,7 @@ completion = openai.ChatCompletion.create(
         {"role": "system", "content": "You are an intelligent laptop assistant. You help with questions around laptop."},
         {"role": "system", "content": "With great questions you have already obtained all the information you need to recommend a laptop."},
         {"role": "system", "content": "That last piece of information you need is the budget of the user."},
-        {"role": "assistant", "content": "What is your budget?"},      
+        {"role": "user", "content": "What is your budget?"},      
     ],
 )
 
