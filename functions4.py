@@ -241,9 +241,9 @@ def get_budget(response):
         function_call="auto",
     )
 
-    message = response["choices"][0]["message"]
-    print(message)
-    return message
+message = response["choices"][0]["message"]
+print(message)
+return message
     
     """
     # Step 2, check if the model wants to call a function
