@@ -7,6 +7,26 @@ import json
 # Read the OpenAI Api_key
 openai.api_key = open("OpenAI_API_Key.txt", "r").read().strip()
 
+# --------------------------------------------------------------
+# Ask ChatGPT a Question
+# --------------------------------------------------------------
+
+
+completion = openai.ChatCompletion.create(
+    model="gpt-3.5-turbo-0613",
+    messages=[
+        {"role": "system", "content": "You are an intelligent laptop assistant. You help with questions around laptop."},
+        {"role": "system", "content": "With great questions you have already obtained all the information you need to recommend a laptop."},
+        {"role": "system", "content": "That last piece of information you need is the budget of the user."},
+        {"role": "assistant", "content": "What is your budget?"},      
+    ],
+)
+
+output = completion.choices[0].message.content
+print(output)
+
+
+"""
 
 # --------------------------------------------------------------
 # Use OpenAI’s Function Calling Feature
@@ -52,6 +72,7 @@ assistant_reply = completion.choices[0].message["content"]
 # Print the assistant's reply
 print(assistant_reply)
 
+"""
 
 """
 
