@@ -23,7 +23,11 @@ completion = openai.ChatCompletion.create(
 )
 
 output = completion.choices[0].message.content
+print(completion)
 print(output)
+
+
+
 
 
 """
