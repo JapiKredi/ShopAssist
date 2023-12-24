@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request
-from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation
+from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget
 
 import openai
 import ast
@@ -81,8 +81,10 @@ def invite():
                 return redirect(url_for('end_conv'))
             
             ####
-            #budget = check_budget(response)
-
+            budget_conversation = budget_prompting(response)
+            #conversation_bot.append(budget_conversation)
+            budget_dictionary = get_budget(conversation)
+            print(budget_dictionary)
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
             top_3_laptops = compare_laptops_with_user(response)
