@@ -55,7 +55,7 @@ def invite():
     if moderation == 'Flagged':
         return redirect(url_for('end_conv'))
 
-    if top_3_laptops is None or budget is None:
+    if top_3_laptops is None and budget is None:
         conversation.append({"role": "user", "content": user_input + prompt})
         conversation_bot.append({'user':user_input})
 
