@@ -29,16 +29,16 @@ conversation_bot.append({'bot':introduction})
 # The code top_3_laptops = None assigns the value None to the variable top_3_laptops.
 top_3_laptops = None
 budget = None
-
+currency_symbol = None
 
 @app.route("/")
 def default_func():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary
+    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
     return render_template("index_invite.html", name_xyz = conversation_bot)
 
 @app.route("/end_conv", methods = ['POST','GET'])
 def end_conv():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary
+    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
     conversation_bot = []
     conversation = initialize_conversation()
     introduction = get_chat_model_completions(conversation)
@@ -48,7 +48,7 @@ def end_conv():
 
 @app.route("/invite", methods = ['POST'])
 def invite():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary
+    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
     user_input = request.form["user_input_message"]
     prompt = 'Remember your system message and that you are an intelligent laptop assistant. So, you only help with questions around laptop.'
     moderation = moderation_check(user_input)
