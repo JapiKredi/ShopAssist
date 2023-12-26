@@ -81,6 +81,7 @@ def invite():
         else:  
             print('starting with budget prompting)')
             budget_conversation = budget_prompting()
+            print(budget_conversation)
             budget_response_assistant = get_chat_model_completions(budget_conversation)
             
             budget_confirmation = budget_confirmation_layer(budget_response_assistant)

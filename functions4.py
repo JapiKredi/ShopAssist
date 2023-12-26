@@ -177,22 +177,9 @@ def budget_prompting():
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - You will have to ask the user a quasrtion in order to give the budget for the laptop. 
     - The value for 'budget' should be a numerical value extracted from the user's response.
-    - 'Budget' value needs to be greater than or equal to 25000 INR. If the user says less than that, please mention that there are no laptops in that range.
+    - 'Budget' value needs to be greater than or equal to 25000 indian rupees. If the user says less than that, please mention that there are no laptops in that range.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
     {delimiter}
-
-    To fill the dictionary, you need to have the following chain of thoughts:
-    {delimiter} Thought 1: Ask a question to understand the user's budget  \n
-    If you have received the budget value, then also check if the currency is clear. 
-    If the currency is unclear then ask another question to understand what is the currency.
-    You are trying to fill the following values {{'Budget': 'values'}} in the python dictionary by asking the user.
-    Answer "Yes" or "No" to indicate if you understand the budget and have the right currency. \n
-    If yes, proceed to the next step. Otherwise, rephrase the question to capture the budget and the right currency. \n{delimiter}
-
-    {delimiter}Thought 2: Check if you have correctly updated the values for both the budget and also the right currency in the python dictionary. 
-    If you are not confident about the budget or the currency, then please ask clarifying questions. {delimiter}
-
-    Follow the above chain of thoughts and only output the final updated python dictionary. \n
 
     {delimiter} Here is a sample conversation between the user and assistant:
     Assistant:"Thanks for all the information. Could you kindly let me know your budget for the laptop? You can use any currency that you prefer. This will help me find options that fit within your price range while meeting the specified requirements."
@@ -213,13 +200,13 @@ def budget_confirmation_layer(budget_response_assistant):
     delimiter = "####"
     prompt = f"""
     You are a senior evaluator who has an eye for detail.
-    You are provided an input. You need to evaluate if the input contains the budget. 
+    You are provided an input. You need to evaluate if the input contains a budget. 
     The correct input will contain a nummerical value and the currency. For example '1000 USD', or '1000 euro' or '80,000 indian rupees'.
     Output a string 'Yes' if the input contains the budget.
     Otherwise output the string 'No'.
 
     Here is the input: {budget_response_assistant}
-    Only output a one-word string - Yes/No.
+    Only output a one-word string - Yes or No.
     """
 
 
@@ -234,7 +221,7 @@ def budget_confirmation_layer(budget_response_assistant):
 
 def get_budget(messages):
     response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo-0613",
+        model="gpt-4-1106-preview",
         messages=[{"role": "user", "content": "What is your budget for the laptop?"}],
         functions=[
             {
@@ -334,7 +321,6 @@ def recommendation_validation(laptop_recommendation):
             data1.append(data[i])
 
     return data1
-
 
 
 
