@@ -223,13 +223,13 @@ def get_budget(response):
         functions=[
             {
                 "name": "get_budget",
-                "description": "Get the budget from the user",
+                "description": "Get the budget of the laptop from the user",
                 "parameters": {
                     "type": "object",
                     "properties": {
                         "budget_value": {
-                            "type": "integer",
-                            "description": "The budget of the laptop, e.g. 80,000 INR",
+                            "type": "string",
+                            "description": "The budget of the laptop, e.g. 80,000",
                         },
                         "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
                     },
@@ -240,9 +240,7 @@ def get_budget(response):
         function_call="auto",
     )
 
-    message = response["choices"][0]["message"]
-    print(message)
-    return message
+    return response.choices[0].message["content"]
     
 """
     # Step 2, check if the model wants to call a function
