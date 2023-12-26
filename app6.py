@@ -115,7 +115,7 @@ def invite():
                 conversion_rates = get_currency_value(currency_symbol)
                 INR_rate = conversion_rates[0]
                 currency_rate = conversion_rates[1] 
-                currency_conversion_factor = float(INR_rate / currency_rate)
+                currency_conversion_factor = float(INR_rate / currency_rate) # Have to check the formula 
             
                 response = dictionary_present(response_assistant)
 
