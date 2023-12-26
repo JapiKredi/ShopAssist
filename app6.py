@@ -13,6 +13,9 @@ import os
 # Read the OpenAI Api_key
 openai.api_key = open("OpenAI_API_Key.txt", "r").read().strip()
 
+# Read the Currency converter Api_key
+API_KEY = open("API_Key.txt", "r").read().strip()
+
 # The code app = Flask(__name__) creates an instance of the Flask class in Python.
 # The Flask class is a part of the Flask framework, which is a popular web framework used for building web applications in Python. It provides a set of tools and libraries for handling HTTP requests, routing, and rendering HTML templates.
 app = Flask(__name__)
@@ -108,6 +111,11 @@ def invite():
                 # Printing the extracted values
                 print("budget_value:", budget)
                 print("currency_symbol:", currency_symbol)
+                
+                conversion_rates = get_currency_value(currency_symbol)
+                INR_rate = conversion_rates[0]
+                currency_rate = conversion_rates[1] 
+                currency_conversion_factor = float(INR_rate / currency_rate)
             
                 response = dictionary_present(response_assistant)
 
@@ -116,7 +124,7 @@ def invite():
                     return redirect(url_for('end_conv'))
 
                 conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
-                top_3_laptops = compare_laptops_with_user(response)
+                top_3_laptops = compare_laptops_with_user(response,budget,currency_symbol)
 
                 validated_reco = recommendation_validation(top_3_laptops)
 
