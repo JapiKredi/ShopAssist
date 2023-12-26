@@ -20,6 +20,7 @@ app = Flask(__name__)
 # This list will be used to store conversation data.
 conversation_bot = []
 conversation = initialize_conversation()
+budget_conversation = budget_prompting()
 introduction = get_chat_model_completions(conversation)
 
 # The code conversation_bot.append({'bot': introduction}) appends a new dictionary to the conversation_bot list. 
@@ -77,8 +78,10 @@ def invite():
         else:  
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
-            budget_conversation = budget_prompting()
-            response_assistant = get_chat_model_completions(budget_conversation)
+            conversation.append({"role": "assistant", "content": budget_conversation})
+           
+            #budget_conversation = budget_prompting()
+            response_assistant = get_budget(conversation)
             
             moderation = moderation_check(response_assistant)
             if moderation == 'Flagged':
