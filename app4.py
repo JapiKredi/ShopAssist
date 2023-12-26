@@ -81,7 +81,6 @@ def invite():
             if moderation == 'Flagged':
                 return redirect(url_for('end_conv'))
             
-            ####
             budget_conversation = budget_prompting(conversation)
             #conversation_bot.append(budget_conversation)
             budget_dictionary = get_budget(budget_conversation)
