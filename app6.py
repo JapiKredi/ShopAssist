@@ -79,9 +79,7 @@ def invite():
             print('starting with budget prompting)')
             budget_conversation = budget_prompting()
             print(budget_conversation)
-            conversation.append({"role": "assistant", "content": budget_conversation})
-            print(conversation)
-            budget_dictionary = get_budget(conversation)           
+            budget_dictionary = get_budget(conversation)        
             print(f"budget dictionary: {budget_dictionary}")
 
             # Extracting budget_value and currency_symbol from the message

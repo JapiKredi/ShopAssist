@@ -168,15 +168,14 @@ def budget_prompting():
 
     
     system_message = f"""
-
-    You are an intelligent laptop gadget expert and your goal is to find the best laptop for a user.
-    You have already gathered the relevant questions and you already understand the user profile by analysing the user's responses.\
     You final objective is to also get the budget of the user.
     The python dictionary looks like this {{'Budget': 'values'}}
     The value for 'budget' should be a numerical value extracted from the user's response. 
-    The budget value and the currency currently in the dictionary are only representative values. You will have to ask the useer for the answers of both the budget and also the currency. 
+    The budget value and the currency currently in the dictionary are only representative values. 
+    You will have to ask the user for the answers of both the budget and also the currency. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
+    - You will have to ask the user a quasrtion in order to give the budget for the laptop. 
     - The value for 'budget' should be a numerical value extracted from the user's response.
     - 'Budget' value needs to be greater than or equal to 25000 INR. If the user says less than that, please mention that there are no laptops in that range.
     - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
@@ -191,10 +190,9 @@ def budget_prompting():
     If yes, proceed to the next step. Otherwise, rephrase the question to capture the budget and the right currency. \n{delimiter}
 
     {delimiter}Thought 2: Check if you have correctly updated the values for both the budget and also the right currency in the python dictionary. 
-    If you are not confident about the budget value or the currency , ask clarifying questions. {delimiter}
+    If you are not confident about the budget or the currency, then please ask clarifying questions. {delimiter}
 
     Follow the above chain of thoughts and only output the final updated python dictionary. \n
-
 
     {delimiter} Here is a sample conversation between the user and assistant:
     Assistant:"Thanks for all the information. Could you kindly let me know your budget for the laptop? You can use any currency that you prefer. This will help me find options that fit within your price range while meeting the specified requirements."
@@ -212,10 +210,10 @@ def budget_prompting():
 
 
 
-def get_budget(response):
+def get_budget(messages):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-0613",
-        messages=[{"role": "user", "content": "What is your budget?"}],
+        messages=[{"role": "user", "content": "What is your budget for the laptop?"}],
         functions=[
             {
                 "name": "get_budget",
