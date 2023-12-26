@@ -109,7 +109,106 @@ def intent_confirmation_layer(response_assistant):
     return confirmation["choices"][0]["text"]
 
 
+def budget_prompting():  
+    delimiter = "####"
+    example_user_req = {'Budget': '80000 INR'}
 
+    
+    system_message = f"""
+    You final objective is to also get the budget of the user.
+    The python dictionary looks like this {{'Budget': 'values'}}
+    The value for 'budget' should be a numerical value and the currency as extracted from the user's response. 
+    For example '1000 USD', or '1000 euro' or '80,000 indian rupees'.
+    The budget value and the currency currently in the dictionary are only representative values. 
+    You will have to ask the user for the answers of both the budget and also the currency. 
+    
+    {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
+    - You will have to ask the user a question in order to get the budgetof the uder for the laptop. 
+    - The value for 'budget' should be a numerical value extracted from the user's response.
+    - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
+    {delimiter}
+
+    {delimiter} Here is a sample conversation between the user and assistant:
+    Assistant:"Thanks for all the information. Could you kindly let me know your budget for the laptop? You can use any currency that you prefer. This will help me find options that fit within your price range while meeting the specified requirements."
+    User: "My max budget is 80,000"
+    Assistant:"Thanks. Which currency is this?" Please provide the currency code.
+    User: "80,000 INR"
+    
+    Assistant: "{example_user_req}"
+    {delimiter}
+
+    Ask the user what the budget is for the laptop. Do not start with Assistant: "
+    """
+    conversation = [{"role": "system", "content": system_message}]
+    return conversation
+
+
+
+def get_budget(messages):
+    response = openai.ChatCompletion.create(
+        model="gpt-4-1106-preview",
+        messages=[{"role": "user", "content": "What is your budget for the laptop?"}],
+        functions=[
+            {
+                "name": "get_budget",
+                "description": "Get the budget of the laptop from the user",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "budget_value": {
+                            "type": "string",
+                            "description": "The budget of the laptop, e.g. 80,000",
+                        },
+                        "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
+                    },
+                    "required": ["budget_value", 'currency_symbol'],
+                },
+            }
+        ],
+        function_call="auto",
+    )
+
+    return response.choices[0].message["content"]
+    
+"""
+    # Step 2, check if the model wants to call a function
+    if message.get("function_call"):
+        function_name = message["function_call"]["name"]
+        function_args = json.loads(message["function_call"]["arguments"])
+
+        # Step 3, call the function
+        # Note: the JSON response from the model may not be valid JSON
+        function_response = get_budget_(
+            budget_value=function_args.get("budget_value"),
+            currency_symbol=function_args.get("currency_symbol"),
+        )
+        print(budget_value)
+        print(currency_symbol)
+        return budget_value, currency_symbol
+        """
+
+def budget_confirmation_layer(budget_response_assistant):
+    delimiter = "####"
+    prompt = f"""
+    You are a senior evaluator who has an eye for detail.
+    You are provided an input. You need to evaluate if the input contains a budget. 
+    The correct input will contain a nummerical value and the currency. 
+    Correct answers are '80,000 indian rupees', or 100,000 INR', '1000 USD', or '1000 euro' or '1,000 euro'
+    Output a string 'Yes' if the input contains the budget.
+    Correct answers are '80,000 indian rupees', or 100,000 INR', '1000 USD', or '1000 euro' or '1,000 euro'
+    Is there is no nummercial value, then output a string 'No'.
+    
+    Here is the input: {budget_response_assistant}
+    Only output a one-word string - 'Yes' or 'No'.
+    """
+
+    budget_confirmation = openai.Completion.create(
+                                    model="text-davinci-003",
+                                    prompt = prompt,
+                                    temperature=0)
+
+
+    return budget_confirmation["choices"][0]["text"]
 
 def dictionary_present(response):
     delimiter = "####"
@@ -161,106 +260,6 @@ def extract_dictionary_from_string(string):
     return dictionary
 
 
-
-def budget_prompting():  
-    delimiter = "####"
-    example_user_req = {'Budget': '80000 INR'}
-
-    
-    system_message = f"""
-    You final objective is to also get the budget of the user.
-    The python dictionary looks like this {{'Budget': 'values'}}
-    The value for 'budget' should be a numerical value extracted from the user's response. 
-    The budget value and the currency currently in the dictionary are only representative values. 
-    You will have to ask the user for the answers of both the budget and also the currency. 
-    
-    {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
-    - You will have to ask the user a quasrtion in order to give the budget for the laptop. 
-    - The value for 'budget' should be a numerical value extracted from the user's response.
-    - 'Budget' value needs to be greater than or equal to 25000 indian rupees. If the user says less than that, please mention that there are no laptops in that range.
-    - Do not randomly assign values to any of the keys. The values need to be inferred from the user's response.
-    {delimiter}
-
-    {delimiter} Here is a sample conversation between the user and assistant:
-    Assistant:"Thanks for all the information. Could you kindly let me know your budget for the laptop? You can use any currency that you prefer. This will help me find options that fit within your price range while meeting the specified requirements."
-    User: "My max budget is 80,000"
-    Assistant:"Thanks. Which currency is this?"
-    User: "Indian Rupees. 80,000 INR"
-    
-    Assistant: "{example_user_req}"
-    {delimiter}
-
-    Thank the user for providing all the user requirements. And then ask what the budget for the laptop is of the user. Do not start with Assistant: "
-    """
-    conversation = [{"role": "system", "content": system_message}]
-    return conversation
-
-
-def budget_confirmation_layer(budget_response_assistant):
-    delimiter = "####"
-    prompt = f"""
-    You are a senior evaluator who has an eye for detail.
-    You are provided an input. You need to evaluate if the input contains a budget. 
-    The correct input will contain a nummerical value and the currency. For example '1000 USD', or '1000 euro' or '80,000 indian rupees'.
-    Output a string 'Yes' if the input contains the budget.
-    Otherwise output the string 'No'.
-
-    Here is the input: {budget_response_assistant}
-    Only output a one-word string - Yes or No.
-    """
-
-
-    budget_confirmation = openai.Completion.create(
-                                    model="text-davinci-003",
-                                    prompt = prompt,
-                                    temperature=0)
-
-
-    return budget_confirmation["choices"][0]["text"]
-
-
-def get_budget(messages):
-    response = openai.ChatCompletion.create(
-        model="gpt-4-1106-preview",
-        messages=[{"role": "user", "content": "What is your budget for the laptop?"}],
-        functions=[
-            {
-                "name": "get_budget",
-                "description": "Get the budget of the laptop from the user",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "budget_value": {
-                            "type": "string",
-                            "description": "The budget of the laptop, e.g. 80,000",
-                        },
-                        "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
-                    },
-                    "required": ["budget_value", 'currency_symbol'],
-                },
-            }
-        ],
-        function_call="auto",
-    )
-
-    return response.choices[0].message["content"]
-    
-"""
-    # Step 2, check if the model wants to call a function
-    if message.get("function_call"):
-        function_name = message["function_call"]["name"]
-        function_args = json.loads(message["function_call"]["arguments"])
-
-        # Step 3, call the function
-        # Note: the JSON response from the model may not be valid JSON
-        function_response = get_budget_(
-            budget_value=function_args.get("budget_value"),
-            currency_symbol=function_args.get("currency_symbol"),
-        )
-        print(budget_value)
-        print(currency_symbol)
-        return budget_value, currency_symbol
-        """
 
 
 def compare_laptops_with_user(user_req_string):
