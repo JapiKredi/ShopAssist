@@ -198,6 +198,7 @@ def get_budget(messages):
         return budget_value, currency_symbol
         """
 
+
 def budget_confirmation_layer(budget_response_assistant):
     delimiter = "####"
     prompt = f"""
@@ -220,6 +221,7 @@ def budget_confirmation_layer(budget_response_assistant):
 
 
     return budget_confirmation["choices"][0]["text"]
+
 
 def dictionary_present(response):
     delimiter = "####"
@@ -273,11 +275,11 @@ def extract_dictionary_from_string(string):
 
 
 
-def compare_laptops_with_user(user_req_string):
+def compare_laptops_with_user(user_req_string,budget,currency_symbol):
     laptop_df= pd.read_csv('updated_laptop.csv')
-    budget = 80000
     user_requirements = extract_dictionary_from_string(user_req_string)
-    #budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
+    user_budget = budget..replace(',', '').split()[0])
+    budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
     #This line retrieves the value associated with the key 'budget' from the user_requirements dictionary.
     #If the key is not found, the default value '0' is used.
     #The value is then processed to remove commas, split it into a list of strings, and take the first element of the list.
@@ -320,6 +322,31 @@ def compare_laptops_with_user(user_req_string):
     top_laptops = top_laptops.sort_values('Score', ascending=False).head(3)
 
     return top_laptops.to_json(orient='records')
+
+
+def get_currency_value(currency_symbol):
+    url = f"http://api.exchangeratesapi.io/latest?access_key={API_KEY}"
+    response = requests.get(url, verify=False)
+    if response.status_code != 200:
+        print("Status Code:", response.status_code)
+        raise Exception("There was an error!")
+
+    data = response.json()
+
+    # Check if the currency symbols exist in the rates dictionary
+    if 'INR' in data['rates'] and currency_symbol in data['rates']:
+        inr_value = data['rates']['INR']
+        currency_value = data['rates'][currency_symbol]
+        return inr_value, currency_value
+    else:
+        raise ValueError("Invalid currency symbol")
+
+# Example usage
+#def main():
+#    currency_symbol = 'USD'
+#    inr_value, currency_value = get_currency_value(currency_symbol)
+#    print(f"The value of INR is: {inr_value}")
+#    print(f"The value of {currency_symbol} is: {currency_value}")
 
 
 
