@@ -74,7 +74,7 @@ def invite():
         if "No" in confirmation:
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
-        elif Budget is None: 
+        elif budget is None: 
             budget_conversation = budget_prompting(conversation)
             conversation.append({"role": "assistant", "content": response_assistant + budget_conversation})
             conversation_bot.append({'bot':response_assistant})
