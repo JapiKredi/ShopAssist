@@ -162,7 +162,7 @@ def extract_dictionary_from_string(string):
 
 
 
-def budget_prompting(response):
+def budget_prompting():
     '''
     Returns a list [{"role": "system", "content": system_message}]
     '''

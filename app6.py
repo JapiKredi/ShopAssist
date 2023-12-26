@@ -75,16 +75,10 @@ def invite():
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
         elif budget is None: 
-            budget_conversation = budget_prompting(conversation)
-            conversation.append({"role": "assistant", "content": response_assistant + budget_conversation})
+            conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
-
-            #conversation_bot.append(budget_conversation)
+            budget_conversation = budget_prompting()
             response_assistant = get_chat_model_completions(budget_conversation)
-            
-            moderation = moderation_check(response_assistant)
-            if moderation == 'Flagged':
-                return redirect(url_for('end_conv'))
 
             budget_dictionary = get_budget(budget_conversation)
             print('This is what i wanted to print')
