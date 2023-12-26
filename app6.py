@@ -46,7 +46,7 @@ def end_conv():
     top_3_laptops = None
     return redirect(url_for('default_func'))
 
-@app.route("/invite", methods = ['POST'])
+@app.route("/invite", methods = ['POST', 'GET'])
 def invite():
     global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
     user_input = request.form["user_input_message"]
@@ -74,15 +74,19 @@ def invite():
         if "No" in confirmation:
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
-        elif budget is None: 
+        else:  
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
             budget_conversation = budget_prompting()
             response_assistant = get_chat_model_completions(budget_conversation)
-
-            budget_dictionary = get_budget(budget_conversation)
+            
+            moderation = moderation_check(response_assistant)
+            if moderation == 'Flagged':
+                return redirect(url_for('end_conv'))
+            
+            budget_dictionary = get_budget(response_assistant)
             print('This is what i wanted to print')
-            print(f"budget dictionary: {budget_dictionary}")
+            print(f"budget dictionary: {response_assistant}")
             # Extracting budget_value and currency_symbol from the message
             arguments = json.loads(budget_dictionary["function_call"]["arguments"])
             budget = arguments["budget_value"]
@@ -92,7 +96,6 @@ def invite():
             print("budget_value:", budget)
             print("currency_symbol:", currency_symbol)
             
-        else:
             response = dictionary_present(response_assistant)
 
             moderation = moderation_check(response)

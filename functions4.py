@@ -162,11 +162,7 @@ def extract_dictionary_from_string(string):
 
 
 
-def budget_prompting():
-    '''
-    Returns a list [{"role": "system", "content": system_message}]
-    '''
-    
+def budget_prompting():  
     delimiter = "####"
     example_user_req = {'Budget': '80000 INR'}
 
@@ -174,7 +170,7 @@ def budget_prompting():
     system_message = f"""
 
     You are an intelligent laptop gadget expert and your goal is to find the best laptop for a user.
-    You have already gathered the relevant questions and you already understand the user profile by analysing the user's responses: {response}.\
+    You have already gathered the relevant questions and you already understand the user profile by analysing the user's responses.\
     You final objective is to also get the budget of the user.
     The python dictionary looks like this {{'Budget': 'values'}}
     The value for 'budget' should be a numerical value extracted from the user's response. 
