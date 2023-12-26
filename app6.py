@@ -20,7 +20,7 @@ app = Flask(__name__)
 # This list will be used to store conversation data.
 conversation_bot = []
 conversation = initialize_conversation()
-budget_conversation = budget_prompting()
+#budget_conversation = budget_prompting()
 introduction = get_chat_model_completions(conversation)
 
 # The code conversation_bot.append({'bot': introduction}) appends a new dictionary to the conversation_bot list. 
@@ -78,7 +78,9 @@ def invite():
         else:  
             print('starting with budget prompting)')
             budget_conversation = budget_prompting()
-            print(budget_conversation)
+            budget_response_assistant = get_chat_model_completions(budget_conversation)
+            
+            budget_confirmation = budget_confirmation_layer(budget_response_assistant)
             budget_dictionary = get_budget(conversation)        
             print(f"budget dictionary: {budget_dictionary}")
 

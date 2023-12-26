@@ -209,6 +209,31 @@ def budget_prompting():
     return conversation
 
 
+def budhet_confirmation_layer(budget_response_assistant):
+    delimiter = "####"
+    prompt = f"""
+    You are a senior evaluator who has an eye for detail.
+    You are provided an input. You need to evaluate if the input contains the budget, i.e.  the following keys: 'Budget'
+    Next you need to evaluate if the keys have the the values filled correctly.
+    The values for budget consists of a value and a currency. all keys should bbased on the innput as of the user. 
+    Output a string 'Yes' if the input contains the dictionary with the values correctly filled for all keys.
+    Otherwise out the string 'No'.
+
+    Here is the input: {budget_response_assistant}
+    Only output a one-word string - Yes/No.
+    """
+
+
+    budget_confirmation = openai.Completion.create(
+                                    model="text-davinci-003",
+                                    prompt = prompt,
+                                    temperature=0)
+
+
+    return nudget_confirmation["choices"][0]["text"]
+
+
+
 
 def get_budget(messages):
     response = openai.ChatCompletion.create(
