@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request
-from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget, budget_confirmation_layer
+from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget, budget_confirmation_layer, get_budget__completions
 
 
 import openai
@@ -81,10 +81,14 @@ def invite():
         else:  
             print('starting with budget prompting)')
             budget_conversation = budget_prompting()
+            print('Printing budghet prompt')
             print(budget_conversation)
-            budget_response_assistant = get_chat_model_completions(budget_conversation)
+            budget_response_assistant = get_budget__completions(budget_conversation)
+            print('printing the budget response assistant')
+            print(budget_response_assistant)
             
             budget_confirmation = budget_confirmation_layer(budget_response_assistant)
+            print('printing the budget confirmation')
             print(budget_confirmation)
             if "No" in budget_confirmation:
                 budget_conversation.append({"role": "assistant", "content": budget_response_assistant})

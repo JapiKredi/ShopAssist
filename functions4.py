@@ -76,6 +76,7 @@ def get_chat_model_completions(messages):
     )
     return response.choices[0].message["content"]
 
+
 def moderation_check(user_input):
     response = openai.Moderation.create(input=user_input)
     moderation_output = response["results"][0]
@@ -141,6 +142,16 @@ def budget_prompting():
     """
     conversation = [{"role": "system", "content": system_message}]
     return conversation
+
+
+def get_budget__completions(messages):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=messages,
+        temperature=0, # this is the degree of randomness of the model's output
+        max_tokens = 300
+    )
+    return response.choices[0].message["content"]
 
 
 
