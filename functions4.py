@@ -93,10 +93,10 @@ def intent_confirmation_layer(response_assistant):
     Next you need to evaluate if the keys have the the values filled correctly.
     The values for all keys should be 'low', 'medium', or 'high' based on the importance as stated by user. 
     Output a string 'Yes' if the input contains the dictionary with the values correctly filled for all keys.
-    Otherwise out the string 'No'.
+    Otherwise output the string 'No'.
 
     Here is the input: {response_assistant}
-    Only output a one-word string - Yes/No.
+    Only output a one-word string - Yes or No.
     """
 
 
@@ -209,15 +209,14 @@ def budget_prompting():
     return conversation
 
 
-def budhet_confirmation_layer(budget_response_assistant):
+def budget_confirmation_layer(budget_response_assistant):
     delimiter = "####"
     prompt = f"""
     You are a senior evaluator who has an eye for detail.
-    You are provided an input. You need to evaluate if the input contains the budget, i.e.  the following keys: 'Budget'
-    Next you need to evaluate if the keys have the the values filled correctly.
-    The values for budget consists of a value and a currency. all keys should bbased on the innput as of the user. 
-    Output a string 'Yes' if the input contains the dictionary with the values correctly filled for all keys.
-    Otherwise out the string 'No'.
+    You are provided an input. You need to evaluate if the input contains the budget. 
+    The correct input will contain a nummerical value and the currency. For example '1000 USD', or '1000 euro' or '80,000 indian rupees'.
+    Output a string 'Yes' if the input contains the budget.
+    Otherwise output the string 'No'.
 
     Here is the input: {budget_response_assistant}
     Only output a one-word string - Yes/No.
@@ -230,9 +229,7 @@ def budhet_confirmation_layer(budget_response_assistant):
                                     temperature=0)
 
 
-    return nudget_confirmation["choices"][0]["text"]
-
-
+    return budget_confirmation["choices"][0]["text"]
 
 
 def get_budget(messages):
