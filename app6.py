@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, request
-from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget
+from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget, budget_confirmation_layer
+
 
 import openai
 import ast
@@ -20,7 +21,7 @@ app = Flask(__name__)
 # This list will be used to store conversation data.
 conversation_bot = []
 conversation = initialize_conversation()
-#budget_conversation = budget_prompting()
+budget_conversation = budget_prompting()
 introduction = get_chat_model_completions(conversation)
 
 # The code conversation_bot.append({'bot': introduction}) appends a new dictionary to the conversation_bot list. 
@@ -75,51 +76,61 @@ def invite():
         if "No" in confirmation:
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
+            print('the intent confirmation layer says no')
+            print(confirmation)
         else:  
             print('starting with budget prompting)')
             budget_conversation = budget_prompting()
             budget_response_assistant = get_chat_model_completions(budget_conversation)
             
             budget_confirmation = budget_confirmation_layer(budget_response_assistant)
-            budget_dictionary = get_budget(conversation)        
-            print(f"budget dictionary: {budget_dictionary}")
+            print(budget_confirmation)
+            if "No" in budget_confirmation:
+                budget_conversation.append({"role": "assistant", "content": budget_response_assistant})
+                conversation_bot.append({'bot':budget_response_assistant})
+            else:
+                conversation.append({"role": "assistant", "content": budget_response_assistant})
+                conversation_bot.append({'bot':budget_response_assistant})
 
-            # Extracting budget_value and currency_symbol from the message
-            arguments = json.loads(budget_dictionary["function_call"]["arguments"])
-            budget = arguments["budget_value"]
-            currency_symbol = arguments["currency_symbol"]
+                #budget_dictionary = get_budget(conversation)        
+                #print(f"budget dictionary: {budget_dictionary}")
 
-            # Printing the extracted values
-            print("budget_value:", budget)
-            print("currency_symbol:", currency_symbol)
+                # Extracting budget_value and currency_symbol from the message
+                #arguments = json.loads(budget_dictionary["function_call"]["arguments"])
+                #budget = arguments["budget_value"]
+                #currency_symbol = arguments["currency_symbol"]
+
+                # Printing the extracted values
+                #print("budget_value:", budget)
+                #print("currency_symbol:", currency_symbol)
             
-            response = dictionary_present(response_assistant)
+                response = dictionary_present(response_assistant)
 
-            moderation = moderation_check(response)
-            if moderation == 'Flagged':
-                return redirect(url_for('end_conv'))
+                moderation = moderation_check(response)
+                if moderation == 'Flagged':
+                    return redirect(url_for('end_conv'))
 
-            conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
-            top_3_laptops = compare_laptops_with_user(response)
+                conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
+                top_3_laptops = compare_laptops_with_user(response)
 
-            validated_reco = recommendation_validation(top_3_laptops)
+                validated_reco = recommendation_validation(top_3_laptops)
 
-            if len(validated_reco) == 0:
-                conversation_bot.append({'bot':"Sorry, we do not have laptops that match your requirements. Connecting you to a human expert. Please end this conversation."})
+                if len(validated_reco) == 0:
+                    conversation_bot.append({'bot':"Sorry, we do not have laptops that match your requirements. Connecting you to a human expert. Please end this conversation."})
 
-            conversation_reco = initialize_conv_reco(validated_reco)
-            recommendation = get_chat_model_completions(conversation_reco)
+                conversation_reco = initialize_conv_reco(validated_reco)
+                recommendation = get_chat_model_completions(conversation_reco)
 
-            moderation = moderation_check(recommendation)
-            if moderation == 'Flagged':
-                return redirect(url_for('end_conv'))
+                moderation = moderation_check(recommendation)
+                if moderation == 'Flagged':
+                    return redirect(url_for('end_conv'))
 
-            conversation_reco.append({"role": "user", "content": "This is my user profile" + response})
+                conversation_reco.append({"role": "user", "content": "This is my user profile" + response})
 
-            conversation_reco.append({"role": "assistant", "content": recommendation})
-            conversation_bot.append({'bot':recommendation})
+                conversation_reco.append({"role": "assistant", "content": recommendation})
+                conversation_bot.append({'bot':recommendation})
 
-            print(recommendation + '\n')
+                print(recommendation + '\n')
 
     else:
         conversation_reco.append({"role": "user", "content": user_input})
