@@ -1,5 +1,5 @@
 from flask import Flask, redirect, url_for, render_template, request
-from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget
+from functions7 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation
 
 import openai
 import ast
@@ -20,7 +20,6 @@ app = Flask(__name__)
 # This list will be used to store conversation data.
 conversation_bot = []
 conversation = initialize_conversation()
-budget_conversation = budget_prompting()
 introduction = get_chat_model_completions(conversation)
 
 # The code conversation_bot.append({'bot': introduction}) appends a new dictionary to the conversation_bot list. 
@@ -29,17 +28,16 @@ conversation_bot.append({'bot':introduction})
 
 # The code top_3_laptops = None assigns the value None to the variable top_3_laptops.
 top_3_laptops = None
-budget = None
-currency_symbol = None
+
 
 @app.route("/")
 def default_func():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
+    global conversation_bot, conversation, top_3_laptops
     return render_template("index_invite.html", name_xyz = conversation_bot)
 
 @app.route("/end_conv", methods = ['POST','GET'])
 def end_conv():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
+    global conversation_bot, conversation, top_3_laptops
     conversation_bot = []
     conversation = initialize_conversation()
     introduction = get_chat_model_completions(conversation)
@@ -47,9 +45,9 @@ def end_conv():
     top_3_laptops = None
     return redirect(url_for('default_func'))
 
-@app.route("/invite", methods = ['POST', 'GET'])
+@app.route("/invite", methods = ['POST'])
 def invite():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco, budget_conversation, budget_dictionary, budget
+    global conversation_bot, conversation, top_3_laptops, conversation_reco
     user_input = request.form["user_input_message"]
     prompt = 'Remember your system message and that you are an intelligent laptop assistant. So, you only help with questions around laptop.'
     moderation = moderation_check(user_input)
@@ -75,24 +73,7 @@ def invite():
         if "No" in confirmation:
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
-        else:  
-            print('starting with budget prompting)')
-            budget_conversation = budget_prompting()
-            print(budget_conversation)
-            conversation.append({"role": "assistant", "content": budget_conversation})
-            print(conversation)
-            budget_dictionary = get_budget(conversation)           
-            print(f"budget dictionary: {budget_dictionary}")
-
-            # Extracting budget_value and currency_symbol from the message
-            arguments = json.loads(budget_dictionary["function_call"]["arguments"])
-            budget = arguments["budget_value"]
-            currency_symbol = arguments["currency_symbol"]
-
-            # Printing the extracted values
-            print("budget_value:", budget)
-            print("currency_symbol:", currency_symbol)
-            
+        else:
             response = dictionary_present(response_assistant)
 
             moderation = moderation_check(response)
