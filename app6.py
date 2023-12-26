@@ -56,6 +56,8 @@ def invite():
         return redirect(url_for('end_conv'))
 
     if top_3_laptops is None:
+        budget_conversation = budget_prompting(conversation)
+
         conversation.append({"role": "user", "content": user_input + prompt})
         conversation_bot.append({'user':user_input})
 
@@ -74,14 +76,10 @@ def invite():
         if "No" in confirmation:
             conversation.append({"role": "assistant", "content": response_assistant})
             conversation_bot.append({'bot':response_assistant})
-        else:
-            response = dictionary_present(response_assistant)
-
-            moderation = moderation_check(response)
-            if moderation == 'Flagged':
-                return redirect(url_for('end_conv'))
-            
-            ####
+        
+        elif budget is None:
+            conversation.append({"role": "user", "content": user_input + budget_conversation})
+            conversation_bot.append({'user':user_input})
             budget_conversation = budget_prompting(conversation)
             #conversation_bot.append(budget_conversation)
             budget_dictionary = get_budget(budget_conversation)
@@ -95,6 +93,14 @@ def invite():
             # Printing the extracted values
             print("budget_value:", budget)
             print("currency_symbol:", currency_symbol)
+       
+        else:
+
+            response = dictionary_present(response_assistant)
+
+            moderation = moderation_check(response)
+            if moderation == 'Flagged':
+                return redirect(url_for('end_conv'))
             
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})

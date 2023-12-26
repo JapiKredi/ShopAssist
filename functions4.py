@@ -178,7 +178,7 @@ def budget_prompting(response):
     You final objective is to also get the budget of the user.
     The python dictionary looks like this {{'Budget': 'values'}}
     The value for 'budget' should be a numerical value extracted from the user's response. 
-    The values currently in the dictionary are only representative values. 
+    The budget value and the currency currently in the dictionary are only representative values. You will have to ask the useer for the answers of both the budget and also the currency. 
     
     {delimiter}Here are some instructions around the values for the different keys. If you do not follow this, you'll be heavily penalised.
     - The value for 'budget' should be a numerical value extracted from the user's response.
