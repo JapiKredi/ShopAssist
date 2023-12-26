@@ -81,7 +81,7 @@ def invite():
         else:  
             print('starting with budget prompting)')
             budget_conversation = budget_prompting()
-            print('Printing budghet prompt')
+            print('Printing budget prompt')
             print(budget_conversation)
             budget_response_assistant = get_budget__completions(budget_conversation)
             print('printing the budget response assistant')
@@ -94,20 +94,20 @@ def invite():
                 budget_conversation.append({"role": "assistant", "content": budget_response_assistant})
                 conversation_bot.append({'bot':budget_response_assistant})
             else:
-                conversation.append({"role": "assistant", "content": budget_response_assistant})
-                conversation_bot.append({'bot':budget_response_assistant})
+                #conversation.append({"role": "assistant", "content": budget_response_assistant})
+                #conversation_bot.append({'bot':budget_response_assistant})
 
-                #budget_dictionary = get_budget(conversation)        
-                #print(f"budget dictionary: {budget_dictionary}")
+                budget_dictionary = get_budget(conversation)        
+                print(f"budget dictionary: {budget_dictionary}")
 
                 # Extracting budget_value and currency_symbol from the message
-                #arguments = json.loads(budget_dictionary["function_call"]["arguments"])
-                #budget = arguments["budget_value"]
-                #currency_symbol = arguments["currency_symbol"]
+                arguments = json.loads(budget_dictionary["function_call"]["arguments"])
+                budget = arguments["budget_value"]
+                currency_symbol = arguments["currency_symbol"]
 
                 # Printing the extracted values
-                #print("budget_value:", budget)
-                #print("currency_symbol:", currency_symbol)
+                print("budget_value:", budget)
+                print("currency_symbol:", currency_symbol)
             
                 response = dictionary_present(response_assistant)
 
