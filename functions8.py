@@ -298,8 +298,6 @@ def compare_laptops_with_user(user_req_string, currency_conversion_rate):
     user_requirements = extract_dictionary_from_string(user_req_string)
     print(currency_conversion_rate)
     budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
-    budget_right_currency = budget * currency_conversion_rate
-    print(budget_right_currency)
     
     #This line retrieves the value associated with the key 'budget' from the user_requirements dictionary.
     #If the key is not found, the default value '0' is used.
@@ -309,6 +307,7 @@ def compare_laptops_with_user(user_req_string, currency_conversion_rate):
 
     filtered_laptops = laptop_df.copy()
     filtered_laptops['Price'] = filtered_laptops['Price'].str.replace(',','').astype(int)
+    filtered_laptops['Price'] = filtered_laptops['Price'] * currency_conversion_rate
     filtered_laptops = filtered_laptops[filtered_laptops['Price'] <= budget].copy()
     #These lines create a copy of the laptop_df DataFrame and assign it to filtered_laptops.
     #They then modify the 'Price' column in filtered_laptops by removing commas and converting the values to integers.
