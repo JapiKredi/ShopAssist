@@ -83,8 +83,8 @@ def invite():
                 return redirect(url_for('end_conv'))
             
             print('Printing the conversation bot')
-            print(conversation_bot)
-            budget_value = get_budget(conversation_bot)
+            print(conversation)
+            budget_value = get_budget(conversation)
             
             print('Printing the output of the function call get budget')
             print(budget_value)

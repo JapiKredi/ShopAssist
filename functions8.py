@@ -202,10 +202,10 @@ def get_budget(conversation):
 
     return response.choices[0].message["content"]
 """ 
-
+"""
 def get_budget(conversation_bot):
     response = openai.ChatCompletion.create(
-        model="gpt-4-1106-preview",
+        model="gpt-3.5-turbo-1106",
         messages=conversation_bot,
         functions=[
             {
@@ -226,10 +226,45 @@ def get_budget(conversation_bot):
         ],
         function_call="auto",
     )
-    print('Printing the response dictionary')
+    print('Printing the response output of get_budget function')
     print(response)
     return response
     #return response.choices[0].message["content"]["budget_value"], #response.choices[0].message["content"]["currency_symbol"]
+"""
+
+def get_budget(conversation_bot):
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo-1106",
+        messages=conversation_bot,
+        functions=[
+            {
+                "name": "get_budget",
+                "description": "Get the budget of the laptop from the user",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "budget_value": {
+                            "type": "string",
+                            "description": "The budget of the laptop, e.g. 80,000",
+                        },
+                        "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
+                    },
+                    "required": ["budget_value", 'currency_symbol'],
+                },
+            }
+        ],
+        function_call="auto",
+    )
+    print('Printing the response output of get_budget function')
+    print(response)
+    
+    # Extracting the budget_value and currency_symbol from the response
+    function_call = response['choices'][0]['message']['function_call']
+    arguments = json.loads(function_call['arguments'])
+    budget_value = arguments['budget_value']
+    currency_symbol = arguments['currency_symbol']
+    
+    return budget_value, currency_symbol
 
 
 def compare_laptops_with_user(user_req_string):
