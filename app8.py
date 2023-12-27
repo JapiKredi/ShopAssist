@@ -82,7 +82,7 @@ def invite():
             if moderation == 'Flagged':
                 return redirect(url_for('end_conv'))
             
-            budget_value = get_budget(response_assistant)
+            budget_value = get_budget(conversation)
             print(response_assistant)
             print(budget_value)
 
