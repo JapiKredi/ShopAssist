@@ -99,8 +99,7 @@ def invite():
             inr_value, currency_value = get_currency_value(currency_symbol)
             print(f"The value of INR is: {inr_value}")
             print(f"The value of {currency_symbol} is: {currency_value}")
-            currency_conversion_rate = float(currency_value) / float(inr_value)
-            print(type(currency_conversion_rate))
+            currency_conversion_rate = float(inr_value) / float(currency_value)
             print(currency_conversion_rate)
                         
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
