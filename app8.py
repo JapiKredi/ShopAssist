@@ -82,9 +82,9 @@ def invite():
             if moderation == 'Flagged':
                 return redirect(url_for('end_conv'))
             
-            budget_value = get_budget(conversation_bot)
             print('Printing the conversation bot')
             print(conversation_bot)
+            budget_value = get_budget(conversation_bot)
             
             print('Printing the output of the function call get budget')
             print(budget_value)

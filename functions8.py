@@ -226,8 +226,10 @@ def get_budget(conversation_bot):
         ],
         function_call="auto",
     )
-
-    return response.choices[0].message["content"]["budget_value"], #response.choices[0].message["content"]["currency_symbol"]
+    print('Printing the response dictionary')
+    print(response)
+    return response
+    #return response.choices[0].message["content"]["budget_value"], #response.choices[0].message["content"]["currency_symbol"]
 
 
 def compare_laptops_with_user(user_req_string):
