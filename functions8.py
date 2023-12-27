@@ -341,6 +341,7 @@ def compare_laptops_with_user(user_req_string, currency_conversion_rate, currenc
         filtered_laptops.loc[index, 'Score'] = score
 
     # Sort the laptops by score in descending order and return the top 5 products
+    print(top_laptops)
     top_laptops = filtered_laptops.drop('laptop_feature', axis=1)
     top_laptops = top_laptops.sort_values('Score', ascending=False).head(3)
 
