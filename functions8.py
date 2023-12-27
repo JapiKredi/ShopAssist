@@ -267,6 +267,31 @@ def get_budget(conversation_bot):
     return budget_value, currency_symbol
 
 
+def get_currency_value(currency_symbol):
+    url = f"http://api.exchangeratesapi.io/latest?access_key={API_KEY}"
+    response = requests.get(url, verify=False)
+    if response.status_code != 200:
+        print("Status Code:", response.status_code)
+        raise Exception("There was an error!")
+
+    data = response.json()
+
+    # Check if the currency symbols exist in the rates dictionary
+    if 'INR' in data['rates'] and currency_symbol in data['rates']:
+        inr_value = data['rates']['INR']
+        currency_value = data['rates'][currency_symbol]
+        return inr_value, currency_value
+    else:
+        raise ValueError("Invalid currency symbol")
+
+# Example usage
+#def main():
+#    currency_symbol = 'USD'
+#    inr_value, currency_value = get_currency_value(currency_symbol)
+#    print(f"The value of INR is: {inr_value}")
+#    print(f"The value of {currency_symbol} is: {currency_value}")
+
+
 def compare_laptops_with_user(user_req_string):
     laptop_df= pd.read_csv('updated_laptop.csv')
     user_requirements = extract_dictionary_from_string(user_req_string)

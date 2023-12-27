@@ -1,7 +1,7 @@
 # same as app.py but then with the function call in get_chat_model_completions
 
 from flask import Flask, redirect, url_for, render_template, request
-from functions8 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, get_budget
+from functions8 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, get_budget, get_currency_value
 
 import openai
 import ast
@@ -13,6 +13,9 @@ import os
 
 # Read the OpenAI Api_key
 openai.api_key = open("OpenAI_API_Key.txt", "r").read().strip()
+
+# Read the Currency converter Api_key
+API_KEY = open("API_Key.txt", "r").read().strip()
 
 # The code app = Flask(__name__) creates an instance of the Flask class in Python.
 # The Flask class is a part of the Flask framework, which is a popular web framework used for building web applications in Python. It provides a set of tools and libraries for handling HTTP requests, routing, and rendering HTML templates.
@@ -90,8 +93,13 @@ def invite():
             print('Printing the output of the function call get budget')
             print(budget_value)
             print(currency_symbol)
-                        
+            
+            currency_symbol = 'USD'
+            inr_value, currency_value = get_currency_value(currency_symbol)
+            print(f"The value of INR is: {inr_value}")
+            print(f"The value of {currency_symbol} is: {currency_value}")
 
+                        
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
             top_3_laptops = compare_laptops_with_user(response)
 
