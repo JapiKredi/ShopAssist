@@ -293,7 +293,7 @@ def get_currency_value(currency_symbol):
 #    print(f"The value of {currency_symbol} is: {currency_value}")
 
 
-def compare_laptops_with_user(user_req_string, currency_conversion_rate):
+def compare_laptops_with_user(user_req_string, currency_conversion_rate, currency_symbol):
     laptop_df= pd.read_csv('updated_laptop.csv')
     user_requirements = extract_dictionary_from_string(user_req_string)
     print(currency_conversion_rate)
@@ -308,8 +308,10 @@ def compare_laptops_with_user(user_req_string, currency_conversion_rate):
     filtered_laptops = laptop_df.copy()
     filtered_laptops['Price'] = filtered_laptops['Price'].str.replace(',','').astype(int)
     filtered_laptops['Price'] = filtered_laptops['Price'] * currency_conversion_rate
+    filtered_laptops['Currency'] = currency_symbol
     filtered_laptops = filtered_laptops[filtered_laptops['Price'] <= budget].copy()
-    print(filtered_laptops)
+    print(filtered_laptops[['Brand', 'Model Name', 'Price', 'Currency']])
+
     #These lines create a copy of the laptop_df DataFrame and assign it to filtered_laptops.
     #They then modify the 'Price' column in filtered_laptops by removing commas and converting the values to integers.
     #Finally, they filter filtered_laptops to include only rows where the 'Price' is less than or equal to the budget.
