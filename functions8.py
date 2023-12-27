@@ -175,7 +175,7 @@ def extract_dictionary_from_string(string):
         dictionary = ast.literal_eval(dictionary_string)
     return dictionary
 
-
+"""
 def get_budget(conversation):
     response = openai.ChatCompletion.create(
         model="gpt-4-1106-preview",
@@ -201,8 +201,33 @@ def get_budget(conversation):
     )
 
     return response.choices[0].message["content"]
+""" 
 
+def get_budget(conversation):
+    response = openai.ChatCompletion.create(
+        model="gpt-4-1106-preview",
+        messages=conversation,
+        functions=[
+            {
+                "name": "get_budget",
+                "description": "Get the budget of the laptop from the user",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "budget_value": {
+                            "type": "string",
+                            "description": "The budget of the laptop, e.g. 80,000",
+                        },
+                        "currency_symbol": {"type": "string", "enum": ["USD", "INR", "EUR", "GBP", "CAD", "AUD", "JPY", "CNY", "CHF", "SEK", "NZD", 'MYR', "MXN", "SGD", "HKD", "NOK", "KRW", "TRY", "RUB"]},
+                    },
+                    "required": ["budget_value", 'currency_symbol'],
+                },
+            }
+        ],
+        function_call="auto",
+    )
 
+    return response.choices[0].message["content"]["budget_value"], response.choices[0].message["content"]["currency_symbol"]
 
 
 def compare_laptops_with_user(user_req_string):
