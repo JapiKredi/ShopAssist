@@ -84,7 +84,8 @@ def invite():
             
             print('Printing the conversation bot')
             print(conversation)
-            budget_value = get_budget(conversation)
+            print('running the get budget_function')
+            budget_value, currency_symbol = get_budget(conversation)
             
             print('Printing the output of the function call get budget')
             print(budget_value)
