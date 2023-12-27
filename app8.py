@@ -37,12 +37,12 @@ top_3_laptops = None
 
 @app.route("/")
 def default_func():
-    global conversation_bot, conversation, top_3_laptops
+    global conversation_bot, conversation, top_3_laptops, API_KEY
     return render_template("index_invite.html", name_xyz = conversation_bot)
 
 @app.route("/end_conv", methods = ['POST','GET'])
 def end_conv():
-    global conversation_bot, conversation, top_3_laptops
+    global conversation_bot, conversation, top_3_laptops, API_KEY
     conversation_bot = []
     conversation = initialize_conversation()
     introduction = get_chat_model_completions(conversation)
@@ -52,7 +52,7 @@ def end_conv():
 
 @app.route("/invite", methods = ['POST'])
 def invite():
-    global conversation_bot, conversation, top_3_laptops, conversation_reco
+    global conversation_bot, conversation, top_3_laptops, conversation_reco, API_KEY
     user_input = request.form["user_input_message"]
     prompt = 'Remember your system message and that you are an intelligent laptop assistant. So, you only help with questions around laptop.'
     moderation = moderation_check(user_input)
