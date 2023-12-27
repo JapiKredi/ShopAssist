@@ -176,10 +176,10 @@ def extract_dictionary_from_string(string):
     return dictionary
 
 
-def get_budget(messages):
+def get_budget(conversation):
     response = openai.ChatCompletion.create(
         model="gpt-4-1106-preview",
-        messages=[{"role": "user", "content": "What is your budget for the laptop?"}],
+        messages=conversation, #[{"role": "assistant", "content": "What is your budget for the laptop?"}],
         functions=[
             {
                 "name": "get_budget",
