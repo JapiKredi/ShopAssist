@@ -82,14 +82,14 @@ def invite():
             if moderation == 'Flagged':
                 return redirect(url_for('end_conv'))
             
-            budget_value = get_budget(conversation)
-            print('Printing the conversation')
-            print(conversation)
+            budget_value = get_budget(conversation_bot)
             print('Printing the conversation bot')
             print(conversation_bot)
             
             print('Printing the output of the function call get budget')
             print(budget_value)
+            print(currency_symbol)
+                        
 
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
             top_3_laptops = compare_laptops_with_user(response)
