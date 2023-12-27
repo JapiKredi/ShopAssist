@@ -17,4 +17,4 @@ filtered_laptops['Price'] = filtered_laptops['Price'] * currency_conversion_rate
 filtered_laptops['Currency'] = currency_symbol
 
 filtered_laptops = filtered_laptops[filtered_laptops['Price'] <= budget].copy()
-print(filtered_laptops['Brand', 'Model Name', 'Price', 'Currency'])
+print(filtered_laptops[['Brand', 'Model Name', 'Price', 'Currency']])
