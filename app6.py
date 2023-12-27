@@ -1,5 +1,6 @@
+# Got budget out of the initial function, and created a separate function for budget
 from flask import Flask, redirect, url_for, render_template, request
-from functions4 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget, budget_confirmation_layer, get_budget_completions, get_currency_value
+from functions6 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation, budget_prompting, get_budget, budget_confirmation_layer, get_budget_completions, get_currency_value
 
 
 import openai
