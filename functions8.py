@@ -3,7 +3,7 @@ import ast
 import re
 import pandas as pd
 import json
-
+import requests
 
 def initialize_conversation():
     '''
@@ -268,6 +268,7 @@ def get_budget(conversation_bot):
 
 
 def get_currency_value(currency_symbol):
+    API_KEY = open("API_Key.txt", "r").read().strip()
     url = f"http://api.exchangeratesapi.io/latest?access_key={API_KEY}"
     response = requests.get(url, verify=False)
     if response.status_code != 200:
