@@ -2,7 +2,7 @@ import pandas as pd
 
 laptop_df= pd.read_csv('updated_laptop.csv')
 budget = 1000
-currency_conversion_rate = 1.200209108
+currency_conversion_rate = 0.012000385202430809
 currency_symbol = 'USD"'
 
 #This line retrieves the value associated with the key 'budget' from the user_requirements dictionary.
