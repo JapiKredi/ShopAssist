@@ -144,10 +144,11 @@ def budget_prompting():
     return conversation
 
 
-def get_budget__completions(messages):
+
+def get_budget_completions(budget_conversation):
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
-        messages=messages,
+        messages=budget_conversation,
         temperature=0, # this is the degree of randomness of the model's output
         max_tokens = 300
     )

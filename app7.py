@@ -1,3 +1,5 @@
+# same as app.py but then with the function call in get_chat_model_completions
+
 from flask import Flask, redirect, url_for, render_template, request
 from functions7 import initialize_conversation, initialize_conv_reco, get_chat_model_completions, moderation_check,intent_confirmation_layer,dictionary_present,compare_laptops_with_user,recommendation_validation
 
