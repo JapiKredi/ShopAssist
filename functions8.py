@@ -293,10 +293,14 @@ def get_currency_value(currency_symbol):
 #    print(f"The value of {currency_symbol} is: {currency_value}")
 
 
-def compare_laptops_with_user(user_req_string):
+def compare_laptops_with_user(user_req_string, currency_conversion_rate):
     laptop_df= pd.read_csv('updated_laptop.csv')
     user_requirements = extract_dictionary_from_string(user_req_string)
+    print(currency_conversion_rate)
     budget = int(user_requirements.get('budget', '0').replace(',', '').split()[0])
+    budget_right_currency = budget * currency_conversion_rate
+    print(budget_right_currency)
+    
     #This line retrieves the value associated with the key 'budget' from the user_requirements dictionary.
     #If the key is not found, the default value '0' is used.
     #The value is then processed to remove commas, split it into a list of strings, and take the first element of the list.

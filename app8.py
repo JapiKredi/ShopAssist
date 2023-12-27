@@ -102,10 +102,9 @@ def invite():
             currency_conversion_rate = float(currency_value) / float(inr_value)
             print(type(currency_conversion_rate))
             print(currency_conversion_rate)
-            
                         
             conversation_bot.append({'bot':"Thank you for providing all the information. Kindly wait, while I fetch the products: \n"})
-            top_3_laptops = compare_laptops_with_user(response)
+            top_3_laptops = compare_laptops_with_user(response, currency_conversion_rate)
 
             validated_reco = recommendation_validation(top_3_laptops)
 
