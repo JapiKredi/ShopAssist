@@ -203,10 +203,10 @@ def get_budget(conversation):
     return response.choices[0].message["content"]
 """ 
 
-def get_budget(conversation):
+def get_budget(conversation_bot):
     response = openai.ChatCompletion.create(
         model="gpt-4-1106-preview",
-        messages=conversation,
+        messages=conversation_bot,
         functions=[
             {
                 "name": "get_budget",
@@ -227,7 +227,7 @@ def get_budget(conversation):
         function_call="auto",
     )
 
-    return response.choices[0].message["content"]["budget_value"], response.choices[0].message["content"]["currency_symbol"]
+    return response.choices[0].message["content"]["budget_value"], #response.choices[0].message["content"]["currency_symbol"]
 
 
 def compare_laptops_with_user(user_req_string):
