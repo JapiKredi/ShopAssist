@@ -309,6 +309,7 @@ def compare_laptops_with_user(user_req_string, currency_conversion_rate):
     filtered_laptops['Price'] = filtered_laptops['Price'].str.replace(',','').astype(int)
     filtered_laptops['Price'] = filtered_laptops['Price'] * currency_conversion_rate
     filtered_laptops = filtered_laptops[filtered_laptops['Price'] <= budget].copy()
+    print(filtered_laptops)
     #These lines create a copy of the laptop_df DataFrame and assign it to filtered_laptops.
     #They then modify the 'Price' column in filtered_laptops by removing commas and converting the values to integers.
     #Finally, they filter filtered_laptops to include only rows where the 'Price' is less than or equal to the budget.
