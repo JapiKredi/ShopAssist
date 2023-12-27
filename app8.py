@@ -110,7 +110,7 @@ def invite():
             if len(validated_reco) == 0:
                 conversation_bot.append({'bot':"Sorry, we do not have laptops that match your requirements. Connecting you to a human expert. Please end this conversation."})
 
-            conversation_reco = initialize_conv_reco(validated_reco)
+            conversation_reco = initialize_conv_reco(validated_reco, currency_symbol)
             recommendation = get_chat_model_completions(conversation_reco)
 
             moderation = moderation_check(recommendation)

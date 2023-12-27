@@ -341,13 +341,10 @@ def compare_laptops_with_user(user_req_string, currency_conversion_rate, currenc
         filtered_laptops.loc[index, 'Score'] = score
 
     # Sort the laptops by score in descending order and return the top 5 products
-    print(top_laptops)
     top_laptops = filtered_laptops.drop('laptop_feature', axis=1)
     top_laptops = top_laptops.sort_values('Score', ascending=False).head(3)
-
+    #print(top_laptops.head())
     return top_laptops.to_json(orient='records')
-
-
 
 
 def recommendation_validation(laptop_recommendation):
@@ -362,15 +359,15 @@ def recommendation_validation(laptop_recommendation):
 
 
 
-def initialize_conv_reco(products):
+def initialize_conv_reco(products, currency_symbol):
     system_message = f"""
     You are an intelligent laptop gadget expert and you are tasked with the objective to \
     solve the user queries about any product from the catalogue: {products}.\
     You should keep the user profile in mind while answering the questions.\
 
     Start with a brief summary of each laptop in the following format, in decreasing order of price of laptops:
-    1. <Laptop Name> : <Major specifications of the laptop>, <Price in Rs>
-    2. <Laptop Name> : <Major specifications of the laptop>, <Price in Rs>
+    1. <Laptop Name> : <Major specifications of the laptop>, <Price in {currency_symbol}>
+    2. <Laptop Name> : <Major specifications of the laptop>, <Price in {currency_symbol}>
 
     """
     conversation = [{"role": "system", "content": system_message }]
