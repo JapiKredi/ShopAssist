@@ -16,7 +16,6 @@ openai.api_key = open("OpenAI_API_Key.txt", "r").read().strip()
 
 # Read the Currency converter Api_key
 API_KEY = open("API_Key.txt", "r").read().strip()
-print(API_KEY)
 
 # The code app = Flask(__name__) creates an instance of the Flask class in Python.
 # The Flask class is a part of the Flask framework, which is a popular web framework used for building web applications in Python. It provides a set of tools and libraries for handling HTTP requests, routing, and rendering HTML templates.
